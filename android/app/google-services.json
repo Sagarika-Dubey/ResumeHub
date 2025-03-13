@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "144459588841",
+    "project_id": "resumehub-b6845",
+    "storage_bucket": "resumehub-b6845.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144459588841:android:88e8bf165ea63679affc78",
+        "android_client_info": {
+          "package_name": "com.example.resumehub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMb4layQuJ6KK2RD4kwgx3R_BkM76S6xw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

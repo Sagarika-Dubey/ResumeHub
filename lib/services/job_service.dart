@@ -1,31 +1,29 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class JobApisService {
-  static const String baseUrl = "https://findwork.dev/api/jobs/";
-  final String apiKey =
-      "fc176401ceb7a0803f7523e48caa9e131355ba8d"; // Replace with your Findwork API Key
+class JobSearchService {
+  static const String baseUrl =
+      "https://api.indianapi.com/v1/jobs"; // Update with actual API endpoint
+  static const String apiKey =
+      "sk-live-ck5sQ3gkjWbIBsmxEGOPphQcQubkqift4spWWP5I"; // Replace with your API key
 
-  Future<List<dynamic>> fetchJobs(
-      {String query = "developer", String location = ""}) async {
+  Future<List<dynamic>> fetchJobs(String query, String location) async {
+    final Uri url = Uri.parse("$baseUrl?query=$query&location=$location");
+
     try {
       final response = await http.get(
-        Uri.parse(
-            "$baseUrl?search=$query${location.isNotEmpty ? '&location=$location' : ''}"),
+        url,
         headers: {
-          "Authorization": "Token $apiKey",
+          "Authorization": "Bearer $apiKey",
           "Content-Type": "application/json",
         },
       );
 
-      print("API Status Code: ${response.statusCode}"); // Debugging
-      print("API Response: ${response.body}"); // Debugging
-
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data['results'] ?? [];
+        final data = json.decode(response.body);
+        return data["jobs"]; // Modify based on API response structure
       } else {
-        throw Exception("Failed to fetch jobs: ${response.body}");
+        throw Exception("Failed to load jobs: ${response.statusCode}");
       }
     } catch (e) {
       print("Error fetching jobs: $e");

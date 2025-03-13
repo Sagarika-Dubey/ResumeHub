@@ -20,10 +20,12 @@ class _ResumeScreenState extends State<ResumeScreen> {
     );
 
     if (pickedResult != null && pickedResult.files.isNotEmpty) {
-      File selectedFile = File(pickedResult.files.single.path!);
+      setState(() {
+        selectedFile = File(pickedResult.files.single.path!);
+      });
 
       try {
-        var response = await uploadResume(selectedFile);
+        var response = await uploadResume(selectedFile!);
         setState(() {
           result = response['ats_score']?.toString() ?? "No score received";
         });
@@ -73,7 +75,7 @@ class _ResumeScreenState extends State<ResumeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: pickFileAndUpload,
+                onPressed: pickFileAndUpload, // ✅ Correct function call
                 child: Text("Upload Resume"),
               ),
               SizedBox(height: 20),

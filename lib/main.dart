@@ -15,8 +15,14 @@ import 'package:resumehub/screens/options/projects_page.dart';
 import 'package:resumehub/screens/options/reference_page.dart';
 import 'package:resumehub/screens/options/technical_skills_page.dart';
 import 'package:resumehub/screens/pdf_page.dart';
+import '../services/job_recc.dart';
+import 'authentication/intropage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  print("🔥 Initializing Firebase...");
+  await Firebase.initializeApp();
   runApp(const ResumeHubApp());
 }
 
@@ -27,9 +33,13 @@ class ResumeHubApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Segoe UI',
+      ),
+      home: const WelcomeScreen(),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomePage(),
         'build_option_page': (context) => const Build_Options_Page(),
         'contact_info_page': (context) => const contact_info_page(),
         'carrier_objective_page': (context) => const carrier_objective_page(),
@@ -150,7 +160,7 @@ class LearnScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: JobsScreen(),
+      body: JobRecommendationScreen(),
     );
   }
 }
