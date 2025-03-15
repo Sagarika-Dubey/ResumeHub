@@ -104,7 +104,7 @@ class _interest_hobbies_pageState extends State<interest_hobbies_page> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: MyColor,
                         ),
-                        child: const Text("Save"),
+                        child: const Text("Save",style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),

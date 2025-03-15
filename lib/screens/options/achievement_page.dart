@@ -104,7 +104,7 @@ class _achievement_pageState extends State<achievement_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save"),
+                          child: const Text("Save",style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

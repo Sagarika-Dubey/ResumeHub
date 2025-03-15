@@ -155,8 +155,7 @@ class _carrier_objective_pageState extends State<carrier_objective_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save"),
-                        ),
+                          child: const Text("Save", style: TextStyle(color: Colors.black),),),
                         ElevatedButton(
                           onPressed: () {
                             careerObjectiveFormKey.currentState!.reset();
@@ -171,7 +170,7 @@ class _carrier_objective_pageState extends State<carrier_objective_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Clear"),
+                          child: const Text("Clear",style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

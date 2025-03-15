@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../globals.dart';
 import 'backButton.dart';
 
@@ -11,164 +10,297 @@ class Build_Options_Page extends StatefulWidget {
 }
 
 class _Build_Options_PageState extends State<Build_Options_Page> {
-  List<Map> options = [
+  final List<Map> options = [
     {
       "id": 1,
-      "option_name": "Contact info",
+      "option_name": "Contact Information",
+      "description": "Your email, phone and address details",
       "image": "assets/icons/contact_detail-removebg-preview (1).png",
       "routes": "contact_info_page",
+      "completed": false,
     },
     {
       "id": 2,
-      "option_name": "Carrier Objective",
+      "option_name": "Career Objective",
+      "description": "A brief summary of your career goals",
       "image": "assets/icons/briefcase.png",
       "routes": "carrier_objective_page",
+      "completed": false,
     },
     {
       "id": 3,
       "option_name": "Personal Details",
-      "image": "assets/icons/account.png",
+      "description": "About yourself and background",
+      "image": "assets/icons/prsnl_details.png",
       "routes": "personal_details_page",
+      "completed": false,
     },
     {
       "id": 4,
-      "option_name": "Educations",
+      "option_name": "Education",
+      "description": "Your academic qualifications",
       "image": "assets/icons/graduation-cap.png",
       "routes": "education_page",
+      "completed": false,
     },
     {
       "id": 5,
       "option_name": "Experience",
+      "description": "Your work history and responsibilities",
       "image": "assets/icons/logical-thinking.png",
       "routes": "experience_page",
+      "completed": false,
     },
     {
       "id": 6,
       "option_name": "Technical Skills",
+      "description": "Software, tools, and technologies you know",
       "image": "assets/icons/certificate.png",
       "routes": "technical_skills_page",
+      "completed": false,
     },
     {
       "id": 7,
-      "option_name": "Interest/Hobbies",
+      "option_name": "Interests & Hobbies",
+      "description": "Activities you enjoy outside of work",
       "image": "assets/icons/open-book.png",
       "routes": "interest_hobbies_page",
+      "completed": false,
     },
     {
       "id": 8,
       "option_name": "Projects",
+      "description": "Key projects you've contributed to",
       "image": "assets/icons/project-management.png",
       "routes": "projects_page",
+      "completed": false,
     },
     {
       "id": 9,
       "option_name": "Achievements",
+      "description": "Awards, recognitions and accomplishments",
       "image": "assets/icons/experience.png",
       "routes": "achievement_page",
-    },
-    {
-      "id": 10,
-      "option_name": "References",
-      "image": "assets/icons/handshake.png",
-      "routes": "reference_page",
-    },
-    {
-      "id": 11,
-      "option_name": "Declarations",
-      "image": "assets/icons/declaration.png",
-      "routes": "declaration_page",
+      "completed": false,
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Update completion status based on Global data
+    _updateCompletionStatus();
+  }
+
+  void _updateCompletionStatus() {
+    // This is a placeholder - you would check Global data to see if sections are completed
+    // For example: options[0]["completed"] = Global.contactInfo != null;
+  }
+
+  int _completedSections() {
+    return options.where((option) => option["completed"] == true).length;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Color MyColor = const Color(0xff0475FF);
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final themeColor = const Color(0xff2c8cfb);
+    final accentColor = themeColor.withOpacity(0.1);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         leading: backButton(context),
-        backgroundColor: MyColor,
-        title: const Text("Resume Workspace"),
+        backgroundColor: themeColor,
+        title: const Text(
+          "Resume Builder",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         centerTitle: true,
         elevation: 0,
         actions: [
-          InkWell(
-            onTap: () {
-              if (Global.image != null) {
-                Navigator.of(context).pushNamed("pdf_page");
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Select image First...")));
-                Navigator.of(context).pushNamed("contact_info_page");
-              }
-            },
-            child: const SizedBox(
-              width: 60,
-              child: Icon(Icons.picture_as_pdf),
+          Tooltip(
+            message: "Generate PDF",
+            child: InkWell(
+              onTap: () {
+                if (Global.image != null) {
+                  Navigator.of(context).pushNamed("pdf_page");
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please add a profile image first"),
+                        behavior: SnackBarBehavior.floating,
+                      )
+                  );
+                  Navigator.of(context).pushNamed("contact_info_page");
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: const Icon(Icons.picture_as_pdf),
+              ),
             ),
           )
         ],
       ),
       body: Column(
         children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              width: _width,
-              alignment: const Alignment(0, 0.5),
-              color: MyColor,
-              child: const Text(
-                "Build Options",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 21,
+          // Header section with progress indicator
+          Container(
+            width: screenWidth,
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+            color: themeColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Resume Details",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: _completedSections() / options.length,
+                          backgroundColor: Colors.white.withOpacity(0.3),
+                          color: Colors.white,
+                          minHeight: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      "${_completedSections()}/${options.length}",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Complete all sections for a comprehensive resume",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ),
+
+          // Options list
           Expanded(
-            flex: 18,
-            child: SingleChildScrollView(
+            child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  ...options.map((option) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(option["routes"]);
-                          },
-                          child: Row(
-                            children: [
-                              SizedBox(width: _width * 0.04),
-                              Image.asset(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                final option = options[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: option["completed"] == true
+                            ? themeColor
+                            : Colors.grey.withOpacity(0.2),
+                        width: option["completed"] == true ? 2 : 1,
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(option["routes"]);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: accentColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: Image.asset(
                                 option["image"],
-                                height: _height * 0.0495,
+                                height: 30,
+                                color: themeColor,
                               ),
-                              SizedBox(width: _width * 0.06),
-                              Text(
-                                option["option_name"],
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    option["option_name"],
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: option["completed"] == true
+                                          ? themeColor
+                                          : Colors.black87,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    option["description"],
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Spacer(),
-                              const Icon(Icons.arrow_forward_ios_sharp),
-                              SizedBox(width: _width * 0.05),
-                            ],
-                          ),
+                            ),
+                            option["completed"] == true
+                                ? Icon(Icons.check_circle, color: themeColor)
+                                : Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 18,
+                              color: Colors.grey[400],
+                            ),
+                          ],
                         ),
-                        const Divider(),
-                      ],
-                    );
-                  }).toList(),
-                ],
-              ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: themeColor,
+        child: const Icon(Icons.picture_as_pdf),
+        onPressed: () {
+          if (Global.image != null) {
+            Navigator.of(context).pushNamed("pdf_page");
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Please add a profile image first"),
+                  behavior: SnackBarBehavior.floating,
+                )
+            );
+            Navigator.of(context).pushNamed("contact_info_page");
+          }
+        },
       ),
     );
   }

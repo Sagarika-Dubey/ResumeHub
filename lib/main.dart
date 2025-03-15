@@ -6,18 +6,19 @@ import 'package:resumehub/screens/jobs_screen.dart';
 import 'package:resumehub/screens/options/achievement_page.dart';
 import 'package:resumehub/screens/options/carrier_objective_page.dart';
 import 'package:resumehub/screens/options/contact_info_page.dart';
-import 'package:resumehub/screens/options/declaration_page.dart';
 import 'package:resumehub/screens/options/education_page.dart';
 import 'package:resumehub/screens/options/experience_page.dart';
 import 'package:resumehub/screens/options/interest_hobbies_page.dart';
 import 'package:resumehub/screens/options/personal_details_page.dart';
 import 'package:resumehub/screens/options/projects_page.dart';
-import 'package:resumehub/screens/options/reference_page.dart';
 import 'package:resumehub/screens/options/technical_skills_page.dart';
 import 'package:resumehub/screens/pdf_page.dart';
+import 'package:resumehub/screens/home_screen.dart'; // Import the new HomeScreen file
 import '../services/job_recc.dart';
 import 'authentication/intropage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:resumehub/screens/user_profile_screen.dart';
+import 'screens/categories_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +51,6 @@ class ResumeHubApp extends StatelessWidget {
         'interest_hobbies_page': (context) => const interest_hobbies_page(),
         'projects_page': (context) => const projects_page(),
         'achievement_page': (context) => const achievement_page(),
-        'reference_page': (context) => const reference_page(),
-        'declaration_page': (context) => const declaration_page(),
         'pdf_page': (context) => PDF_Page(),
       },
     );
@@ -69,7 +68,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(),
+    const HomeScreen(), // Using the imported HomeScreen
     const QuizScreen(),
     const LearnScreen(),
     const CardsScreen(),
@@ -82,25 +81,30 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _showUserProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UserProfileScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Color myColor = const Color(0xffffffff);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: myColor,
-        title: const Text("Resume Builder"),
+        title: const Text("RESUME HUB"),
         centerTitle: true,
         elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed("build_option_page");
-        },
-        backgroundColor: myColor,
-        child: const Icon(
-          Icons.add,
-          size: 30,
-        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle, size: 30),
+            onPressed: () {
+              _showUserProfile(context);
+            },
+          ),
+        ],
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -124,27 +128,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset("assets/icons/open-cardboard-box.png", height: 100),
-          const SizedBox(height: 20),
-          const Text(
-            "No Resumes + Create new Resume",
-            style: TextStyle(fontSize: 21, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+// Keep these other screen definitions
 class QuizScreen extends StatelessWidget {
   const QuizScreen({Key? key}) : super(key: key);
 
@@ -170,7 +154,7 @@ class CardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlashcardScreen();
+    return CategoriesScreen();
   }
 }
 
