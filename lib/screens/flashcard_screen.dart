@@ -6,8 +6,7 @@ import 'dart:math' as math;
 import '../services/enhanced_ai_service.dart';
 
 final List<LinearGradient> cardGradients = [
-  LinearGradient(
-      colors: [Color(0xFF4158D0), Color(0xFFC850C0), Color(0xFFFFCC70)]),
+  LinearGradient(colors: [Color(0xFF4158D0), Color(0xFFC850C0)]),
   LinearGradient(colors: [Color(0xFF0093E9), Color(0xFF80D0C7)]),
   LinearGradient(colors: [Color(0xFF8EC5FC), Color(0xFFE0C3FC)]),
   LinearGradient(colors: [Color(0xFFD9AFD9), Color(0xFF97D9E1)]),

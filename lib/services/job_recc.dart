@@ -45,11 +45,9 @@ class _JobRecommendationScreenState extends State<JobRecommendationScreen> {
     });
 
     try {
-      String baseUrl =
-          'http://192.168.117.184:5000'; // Change to Flask Server IP
+      String baseUrl = 'http://192.168.0.227:5000'; // Change to Flask Server IP
 
-      var request =
-          http.MultipartRequest('POST', Uri.parse('$baseUrl/recommend'));
+      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/jobrec'));
 
       request.files.add(
         await http.MultipartFile.fromPath('resume', _resumeFile!.path),
@@ -152,25 +150,25 @@ class _JobRecommendationScreenState extends State<JobRecommendationScreen> {
                           _buildDetailRow(
                               'Job Title',
                               _jobRecommendation!['recommendation']
-                                      ?.get('job_title', 'N/A') ??
+                                      ?['job_title'] ??
                                   'N/A'),
                           _buildDetailRow(
                               'Experience Required',
                               _jobRecommendation!['recommendation']
-                                      ?.get('experience_required', 'N/A') ??
+                                      ?['experience_required'] ??
                                   'N/A'),
                           _buildDetailRow(
                               'Functional Area',
                               _jobRecommendation!['recommendation']
-                                      ?.get('functional_area', 'N/A') ??
+                                      ?['functional_area'] ??
                                   'N/A'),
                           _buildDetailRow(
                               'Key Skills',
                               _jobRecommendation!['recommendation']
-                                      ?.get('key_skills', 'N/A') ??
+                                      ?['key_skills'] ??
                                   'N/A'),
                           _buildDetailRow('Similarity Score',
-                              '${_jobRecommendation!['recommendation']?.get('similarity_score', 0)}%'),
+                              '${_jobRecommendation!['recommendation']?['similarity_score'] ?? 0}%'),
                         ],
                       ),
                     ),

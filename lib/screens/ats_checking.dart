@@ -97,7 +97,7 @@ ${sections?['experience']?['suggestions']?.map((s) => "- $s").join('\n') ?? ''}
 
   Future<Map<String, dynamic>> uploadResume(File file) async {
     final String apiUrl =
-        "http://192.168.0.227:5000/api/analyze"; // Replace with your Flask server IP
+        "http://192.168.0.227:5002/api/analyze"; // Replace with your Flask server IP
 
     try {
       var request = http.MultipartRequest("POST", Uri.parse(apiUrl));

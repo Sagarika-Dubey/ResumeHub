@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:resumehub/screens/ats_checking.dart';
 import 'package:resumehub/screens/build_options_page.dart';
 import 'package:resumehub/screens/flashcard_screen.dart';
-import 'package:resumehub/screens/jobs_screen.dart';
+import 'package:resumehub/screens/jobscree.dart';
 import 'package:resumehub/screens/options/achievement_page.dart';
 import 'package:resumehub/screens/options/carrier_objective_page.dart';
 import 'package:resumehub/screens/options/contact_info_page.dart';
@@ -15,9 +15,11 @@ import 'package:resumehub/screens/options/projects_page.dart';
 import 'package:resumehub/screens/options/reference_page.dart';
 import 'package:resumehub/screens/options/technical_skills_page.dart';
 import 'package:resumehub/screens/pdf_page.dart';
+import 'package:resumehub/services/skill.dart';
 import '../services/job_recc.dart';
 import 'authentication/intropage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import './services/skill.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.home_rounded), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.quiz_rounded), label: 'Quiz'),
+              icon: Icon(Icons.quiz_rounded), label: 'Skill analysis'),
           BottomNavigationBarItem(
               icon: Icon(Icons.book_rounded), label: 'Jobs'),
           BottomNavigationBarItem(
@@ -150,7 +152,9 @@ class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Quiz Page"));
+    return Scaffold(
+      body: SkillAnalysisScreen(),
+    );
   }
 }
 
@@ -160,7 +164,7 @@ class LearnScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: JobRecommendationScreen(),
+      body: JobRecommendations(),
     );
   }
 }
