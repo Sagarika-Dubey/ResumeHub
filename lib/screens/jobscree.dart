@@ -27,8 +27,8 @@ class _JobRecommendationsState extends State<JobRecommendations> {
   List<String> _savedJobs = [];
 
   // Replace with your actual Adzuna API credentials
-  final String _appId = '18ee27b2';
-  final String _appKey = '973e7637ba5482f29e75eaf0e10f6e16';
+  final String _appId = 'app_id';
+  final String _appKey = 'appkey';
 
   // Colors
   final Color _primaryColor = Colors.indigo;
