@@ -564,7 +564,10 @@ class _SkillAnalysisScreenState extends State<SkillAnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Skill Analysis'),
+        title: const Text(
+          'Skill Analysis',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: [

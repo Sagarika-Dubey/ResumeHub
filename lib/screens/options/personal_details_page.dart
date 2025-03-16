@@ -151,7 +151,20 @@ class _personal_details_pageState extends State<personal_details_page> {
                                       });
                                     }),
                                 const SizedBox(width: 10),
-                                const Text("Gujarati"),
+                                const Text("Marathi"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    value: Global.hindiCheckBox,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        Global.hindiCheckBox = val!;
+                                      });
+                                    }),
+                                const SizedBox(width: 10),
+                                const Text("Tamil")
                               ],
                             ),
                             SizedBox(height: _height * 0.015),
@@ -197,7 +210,7 @@ class _personal_details_pageState extends State<personal_details_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save"),
+                          child: const Text("Save",style: TextStyle(color: Colors.black)),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -214,7 +227,7 @@ class _personal_details_pageState extends State<personal_details_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Clear"),
+                          child: const Text("Clear",style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

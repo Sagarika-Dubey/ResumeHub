@@ -105,7 +105,7 @@ class _technical_skills_pageState extends State<technical_skills_page> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: MyColor,
                         ),
-                        child: const Text("Save"),
+                        child: const Text("Save",style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),

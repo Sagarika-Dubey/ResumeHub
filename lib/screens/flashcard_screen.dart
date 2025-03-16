@@ -14,7 +14,14 @@ final List<LinearGradient> cardGradients = [
 ];
 
 class FlashcardScreen extends StatefulWidget {
-  const FlashcardScreen({super.key});
+  final List<Map<String, String>>? initialFlashcards;
+  final String? categoryName;
+
+  const FlashcardScreen({
+    super.key,
+    this.initialFlashcards,
+    this.categoryName,
+  });
 
   @override
   _FlashcardScreenState createState() => _FlashcardScreenState();
@@ -29,16 +36,26 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   bool _isFlipped = false;
   int _currentIndex = 0;
   bool _isLoading = false;
+  late String storageKey;
 
   @override
   void initState() {
     super.initState();
-    _loadFlashcards();
+    storageKey = widget.categoryName != null
+        ? 'flashcards_${widget.categoryName!.toLowerCase().replaceAll(' ', '_')}'
+        : 'flashcards';
+
+    if (widget.initialFlashcards != null && widget.initialFlashcards!.isNotEmpty) {
+      flashcards = widget.initialFlashcards!;
+      _saveFlashcards();
+    } else {
+      _loadFlashcards();
+    }
   }
 
   Future<void> _loadFlashcards() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedFlashcards = prefs.getString('flashcards');
+    final savedFlashcards = prefs.getString(storageKey);
 
     if (savedFlashcards != null) {
       List<dynamic> decodedList = json.decode(savedFlashcards);
@@ -52,7 +69,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
   Future<void> _saveFlashcards() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('flashcards', json.encode(flashcards));
+    await prefs.setString(storageKey, json.encode(flashcards));
   }
 
   void _nextCard() {
@@ -74,8 +91,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final newCards =
-          await EnhancedAIService.generateFlashcards('Current Topic', 5);
+      final topic = widget.categoryName ?? 'Current Topic';
+      final newCards = await EnhancedAIService.generateFlashcards(topic, 5);
       setState(() {
         flashcards.addAll(newCards);
         _isLoading = false;
@@ -140,6 +157,10 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
     if (flashcards.isNotEmpty) {
       setState(() {
         flashcards.removeAt(_currentIndex);
+        if (flashcards.isEmpty) {
+          // Add a default card if all are deleted
+          flashcards.add({'front': 'Add new cards', 'back': 'Tap the + button to add cards'});
+        }
         _currentIndex = _currentIndex % flashcards.length;
       });
       _saveFlashcards();
@@ -148,87 +169,104 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _isFlipped = !_isFlipped),
-            child: TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: _isFlipped ? 180 : 0),
-              duration: Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-              builder: (context, double value, child) {
-                bool isFront = value < 90;
-                return Transform(
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..rotateY((value * math.pi) / 180),
-                  alignment: Alignment.center,
-                  child: Container(
-                    margin: EdgeInsets.all(32),
-                    child: Card(
-                      elevation: 12,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient: cardGradients[
-                              _currentIndex % cardGradients.length],
-                        ),
-                        padding: EdgeInsets.all(32),
-                        child: Center(
-                          child: Transform(
-                            alignment: Alignment.center,
-                            transform: Matrix4.rotationY(isFront ? 0 : math.pi),
-                            child: Text(
-                              isFront
-                                  ? flashcards[_currentIndex]['front']!
-                                  : flashcards[_currentIndex]['back']!,
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.categoryName ?? 'Flashcards'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.science),
+            onPressed: _generateNewCards,
+            tooltip: 'Generate AI Cards',
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _isFlipped = !_isFlipped),
+              child: TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0, end: _isFlipped ? 180 : 0),
+                duration: Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                builder: (context, double value, child) {
+                  bool isFront = value < 90;
+                  return Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..rotateY((value * math.pi) / 180),
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: EdgeInsets.all(32),
+                      child: Card(
+                        elevation: 12,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: cardGradients[
+                            _currentIndex % cardGradients.length],
+                          ),
+                          padding: EdgeInsets.all(32),
+                          child: Center(
+                            child: Transform(
+                              alignment: Alignment.center,
+                              transform: Matrix4.rotationY(isFront ? 0 : math.pi),
+                              child: Text(
+                                isFront
+                                    ? flashcards[_currentIndex]['front']!
+                                    : flashcards[_currentIndex]['back']!,
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        LinearProgressIndicator(
-            value: (flashcards.isEmpty
-                ? 0
-                : (_currentIndex + 1) / flashcards.length)),
-        Text('Card ${_currentIndex + 1} of ${flashcards.length}',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: _previousCard,
-                color: Colors.blue),
-            IconButton(
-                icon: Icon(Icons.add_circle),
-                onPressed: _addCustomCard,
-                color: Colors.blue),
-            IconButton(
-                icon: Icon(Icons.arrow_forward_ios),
-                onPressed: _nextCard,
-                color: Colors.blue),
-            IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: _deleteCurrentCard,
-                color: Colors.red),
-          ],
-        ),
-      ],
+          LinearProgressIndicator(
+              value: (flashcards.isEmpty
+                  ? 0
+                  : (_currentIndex + 1) / flashcards.length)),
+          Text('Card ${_currentIndex + 1} of ${flashcards.length}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: _previousCard,
+                  color: Colors.blue),
+              IconButton(
+                  icon: Icon(Icons.add_circle),
+                  onPressed: _addCustomCard,
+                  color: Colors.blue),
+              IconButton(
+                  icon: Icon(Icons.arrow_forward_ios),
+                  onPressed: _nextCard,
+                  color: Colors.blue),
+              IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: _deleteCurrentCard,
+                  color: Colors.red),
+            ],
+          ),
+          if (_isLoading)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 }
