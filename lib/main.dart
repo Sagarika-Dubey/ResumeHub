@@ -24,11 +24,13 @@ import 'authentication/intropage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:resumehub/screens/user_profile_screen.dart';
 import 'screens/categories_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print("🔥 Initializing Firebase...");
   await Firebase.initializeApp();
+  await dotenv.load(fileName: ".env");
   runApp(const ResumeHubApp());
 }
 

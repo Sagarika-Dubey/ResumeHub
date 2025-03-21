@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,10 +10,10 @@ class JobRecommendations extends StatefulWidget {
   const JobRecommendations({Key? key}) : super(key: key);
 
   @override
-  _JobRecommendationsState createState() => _JobRecommendationsState();
+  JobRecommendationsState createState() => JobRecommendationsState();
 }
 
-class _JobRecommendationsState extends State<JobRecommendations> {
+class JobRecommendationsState extends State<JobRecommendations> {
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -27,8 +28,8 @@ class _JobRecommendationsState extends State<JobRecommendations> {
   List<String> _savedJobs = [];
 
   // Replace with your actual Adzuna API credentials
-  final String _appId = 'app_id';
-  final String _appKey = 'appkey';
+  final String _appId = '${dotenv.env['appId']}';
+  final String _appKey = '${dotenv.env['appKey']}';
 
   // Colors
   final Color _primaryColor = Colors.indigo;
@@ -36,6 +37,7 @@ class _JobRecommendationsState extends State<JobRecommendations> {
 
   @override
   void initState() {
+    print(dotenv.env['appId']);
     super.initState();
     _loadRecentSearches();
     _loadSavedJobs();

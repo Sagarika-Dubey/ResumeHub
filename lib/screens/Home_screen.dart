@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: "Sahil",
+                      text: "User",
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
