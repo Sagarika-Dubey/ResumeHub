@@ -1,4 +1,3 @@
-// signup_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LoginScreen.dart';
@@ -41,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       // Create user with email and password
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
@@ -52,9 +51,17 @@ class _SignupScreenState extends State<SignupScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account created successfully!'),
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 10),
+              const Text('Account created successfully!'),
+            ],
+          ),
           backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
 
@@ -105,9 +112,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // For this example, we'll just show a placeholder message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Google Sign-up would happen here'),
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.info, color: Colors.white),
+              const SizedBox(width: 10),
+              const Text('Google Sign-up would happen here'),
+            ],
+          ),
           backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
     } catch (e) {
@@ -126,104 +141,122 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       body: Container(
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF6E8EFB), Color(0xFFA777E3)],
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back button
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
-                  // Header
-                  const Text(
-                    "Create Account",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                  // App Logo and Name with updated styling
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2E7AFA),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF2E7AFA).withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.description_outlined,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        "RESUME HUB",
+                        style: TextStyle(
+                          color: const Color(0xFF2E7AFA),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Header with more dynamic styling
+                  ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [
+                        const Color(0xFF2E7AFA),
+                        Colors.blue.shade800,
+                      ],
+                    ).createShader(bounds),
+                    child: const Text(
+                      "Create Your\nProfessional\nResume",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Sign up to get started",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
+                  const SizedBox(height: 16),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.shade100),
+                    ),
+                    child: const Text(
+                      "Join our community and build standout resumes that help you land your dream job.",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 50),
 
-                  // Signup Form
+                  const SizedBox(height: 40),
+
+                  // Signup Form with enhanced styling
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0, 10),
+                          color: Colors.black.withOpacity(0.08),
                           blurRadius: 20,
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
                     child: Form(
                       key: _formKey,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Social Signup
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildSocialButton(Icons.facebook, Colors.blue,
-                                  () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Facebook signup not implemented'),
-                                  ),
-                                );
-                              }),
-                              const SizedBox(width: 20),
-                              _buildSocialButton(
-                                  Icons.mail, Colors.red, _signUpWithGoogle),
-                              const SizedBox(width: 20),
-                              _buildSocialButton(Icons.person, Colors.indigo,
-                                  () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Other signup not implemented'),
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            "or use your email for registration",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 30),
-
-                          // Error message
+                          // Error message with improved styling
                           if (_errorMessage != null)
                             Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.only(bottom: 16),
+                              padding: const EdgeInsets.all(12),
+                              margin: const EdgeInsets.only(bottom: 20),
                               decoration: BoxDecoration(
                                 color: Colors.red[50],
                                 borderRadius: BorderRadius.circular(10),
@@ -231,13 +264,15 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  Icon(Icons.error_outline,
-                                      color: Colors.red[700]),
-                                  const SizedBox(width: 8),
+                                  Icon(Icons.error_outline, color: Colors.red[700]),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       _errorMessage!,
-                                      style: TextStyle(color: Colors.red[700]),
+                                      style: TextStyle(
+                                        color: Colors.red[700],
+                                        height: 1.4,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -245,19 +280,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
 
                           // Name Field
-                          TextFormField(
+                          _buildInputField(
                             controller: _nameController,
-                            decoration: InputDecoration(
-                              hintText: "Full Name",
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon:
-                                  const Icon(Icons.person, color: Colors.grey),
-                            ),
+                            labelText: "Full Name",
+                            prefixIcon: Icons.person_outline,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your name';
@@ -265,64 +291,36 @@ class _SignupScreenState extends State<SignupScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
                           // Email Field
-                          TextFormField(
+                          _buildInputField(
                             controller: _emailController,
+                            labelText: "Email",
+                            prefixIcon: Icons.email_outlined,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              hintText: "Email",
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon:
-                                  const Icon(Icons.email, color: Colors.grey),
-                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
                               }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
+                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                                 return 'Please enter a valid email';
                               }
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
                           // Password Field
-                          TextFormField(
+                          _buildPasswordField(
                             controller: _passwordController,
+                            labelText: "Password",
                             obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon:
-                                  const Icon(Icons.lock, color: Colors.grey),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                              ),
-                            ),
+                            onToggleVisibility: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a password';
@@ -333,37 +331,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
                           // Confirm Password Field
-                          TextFormField(
+                          _buildPasswordField(
                             controller: _confirmPasswordController,
+                            labelText: "Confirm Password",
                             obscureText: _obscureConfirmPassword,
-                            decoration: InputDecoration(
-                              hintText: "Confirm Password",
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon:
-                                  const Icon(Icons.lock, color: Colors.grey),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureConfirmPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureConfirmPassword =
-                                        !_obscureConfirmPassword;
-                                  });
-                                },
-                              ),
-                            ),
+                            onToggleVisibility: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please confirm your password';
@@ -376,71 +355,76 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           const SizedBox(height: 30),
 
-                          // Signup Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading
-                                  ? null
-                                  : () {
-                                      if (_formKey.currentState!.validate()) {
-                                        _createAccountWithEmailAndPassword();
-                                      }
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF6E8EFB),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                          // Social Sign-up Options with enhanced styling
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.grey[300])),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  "Or sign up with",
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                                disabledBackgroundColor: Colors.grey,
                               ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Text(
-                                      "SIGN UP",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                      ),
-                                    ),
-                            ),
+                              Expanded(child: Divider(color: Colors.grey[300])),
+                            ],
                           ),
                           const SizedBox(height: 20),
 
-                          // Login Link
+                          // Enhanced social buttons
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                "Already have an account? ",
-                                style: TextStyle(color: Colors.grey),
+                              _buildEnhancedSocialButton(
+                                icon: Icons.g_mobiledata,
+                                color: Colors.red,
+                                onTap: _signUpWithGoogle,
+                                label: "Google",
                               ),
-                              GestureDetector(
+                              const SizedBox(width: 16),
+                              _buildEnhancedSocialButton(
+                                icon: Icons.facebook,
+                                color: Colors.blue[700]!,
                                 onTap: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginScreen(),
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          const Icon(Icons.info, color: Colors.white),
+                                          const SizedBox(width: 10),
+                                          const Text('Facebook signup not implemented'),
+                                        ],
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
                                   );
                                 },
-                                child: const Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    color: Color(0xFF6E8EFB),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                label: "Facebook",
+                              ),
+                              const SizedBox(width: 16),
+                              _buildEnhancedSocialButton(
+                                icon: Icons.apple,
+                                color: Colors.black,
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          const Icon(Icons.info, color: Colors.white),
+                                          const SizedBox(width: 10),
+                                          const Text('Apple signup not implemented'),
+                                        ],
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  );
+                                },
+                                label: "Apple",
                               ),
                             ],
                           ),
@@ -448,6 +432,102 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 30),
+
+                  // Enhanced Signup Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                        if (_formKey.currentState!.validate()) {
+                          _createAccountWithEmailAndPassword();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7AFA),
+                        disabledBackgroundColor: Colors.grey.shade400,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                        shadowColor: const Color(0xFF2E7AFA).withOpacity(0.4),
+                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                          : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "SIGN UP",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward_rounded, size: 18),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Login Link with enhanced styling
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.transparent,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already have an account? ",
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 15,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "LOG IN",
+                            style: TextStyle(
+                              color: const Color(0xFF2E7AFA),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                              decorationThickness: 2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -457,19 +537,171 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildSocialButton(IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData prefixIcon,
+    required String? Function(String?) validator,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          labelText,
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey[100],
+            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: const Color(0xFF2E7AFA), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red[400]!, width: 1),
+            ),
+            prefixIcon: Icon(
+              prefixIcon,
+              color: Colors.grey[600],
+              size: 20,
+            ),
+            hintText: "Enter your $labelText",
+            hintStyle: TextStyle(
+              color: Colors.grey[400],
+              fontSize: 14,
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String labelText,
+    required bool obscureText,
+    required VoidCallback onToggleVisibility,
+    required String? Function(String?) validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          labelText,
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey[100],
+            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: const Color(0xFF2E7AFA), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red[400]!, width: 1),
+            ),
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: Colors.grey[600],
+              size: 20,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                obscureText ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey[600],
+                size: 20,
+              ),
+              onPressed: onToggleVisibility,
+            ),
+            hintText: "Enter your $labelText",
+            hintStyle: TextStyle(
+              color: Colors.grey[400],
+              fontSize: 14,
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEnhancedSocialButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    required String label,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 40,
-        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey.shade300),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[300]!),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: Icon(
-          icon,
-          color: color,
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              color: color,
+              size: 28,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );
