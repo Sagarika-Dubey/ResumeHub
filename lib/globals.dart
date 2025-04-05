@@ -4,9 +4,7 @@ class Global {
   static String? name;
   static String? email;
   static String? phone;
-  static String? address1;
-  static String? address2;
-  static String? address3;
+
 
   static String? careerObjectiveDescription;
   static String? careerObjectiveExperienced;

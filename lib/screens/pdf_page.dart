@@ -20,120 +20,248 @@ class PDF_Page extends StatefulWidget {
 class _PDF_PageState extends State<PDF_Page> {
   final pdf = pw.Document();
 
-  Color MyColor = const Color(0xff0475FF);
+  // Changed main color to dark blue to match image
+  Color myColor = const Color(0xff1d3557);
+  Color accentColor = const Color(0xff2C3E50);
 
-  final image = pw.MemoryImage(
-    File(Global.image!.path).readAsBytesSync(),
-  );
+  late final pw.MemoryImage image;
+  late final MemoryImage image2;
 
-  final image2 = MemoryImage(
-    File(Global.image!.path).readAsBytesSync(),
-  );
-
-  var titleStyle = const TextStyle(color: Colors.white, fontSize: 14);
-  var titleStyle2 = TextStyle(
-      color: Colors.blue.shade900, fontSize: 14, fontWeight: FontWeight.w600);
-  var detailStyle = const TextStyle(color: Colors.grey, fontSize: 12);
-  var detailStyle2 = TextStyle(color: Colors.grey.shade700, fontSize: 12);
-
-  var titleStylePW = const pw.TextStyle(color: PdfColors.white, fontSize: 14);
-  var titleStyle2PW = pw.TextStyle(
-      color: PdfColors.blue900, fontSize: 14, fontWeight: pw.FontWeight.bold);
-  var detailStylePW = const pw.TextStyle(color: PdfColors.grey, fontSize: 12);
-  var detailStyle2PW =
-      const pw.TextStyle(color: PdfColors.grey700, fontSize: 12);
   @override
   void initState() {
+    super.initState();
+
+    if (Global.image != null) {
+      image = pw.MemoryImage(
+        File(Global.image!.path).readAsBytesSync(),
+      );
+
+      image2 = MemoryImage(
+        File(Global.image!.path).readAsBytesSync(),
+      );
+    }
+
+    buildPdf();
+  }
+
+  // Text styles for Flutter UI preview
+  final nameStyle = const TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Color(0xff2C3E50),
+  );
+
+  final nameAccentStyle = const TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.normal,
+    color: Color(0xff4a4a4a),
+  );
+
+  final sectionTitleStyle = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Color(0xff2C3E50),
+  );
+
+  final contentTitleStyle = const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Color(0xff2C3E50),
+  );
+
+  final contentStyle = const TextStyle(
+    fontSize: 13,
+    color: Color(0xff4A4A4A),
+  );
+
+  final sidebarTitleStyle = const TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  final sidebarContentStyle = const TextStyle(
+    fontSize: 13,
+    color: Colors.white70,
+  );
+
+  // Text styles for PDF document
+  final nameStylePw = pw.TextStyle(
+    fontSize: 28,
+    fontWeight: pw.FontWeight.bold,
+    color: PdfColors.blueGrey800,
+  );
+
+  final nameAccentStylePw = pw.TextStyle(
+    fontSize: 28,
+    fontWeight: pw.FontWeight.normal,
+    color: PdfColors.grey800,
+  );
+
+  final sectionTitleStylePw = pw.TextStyle(
+    fontSize: 16,
+    fontWeight: pw.FontWeight.bold,
+    color: PdfColors.blueGrey800,
+  );
+
+  final contentTitleStylePw = pw.TextStyle(
+    fontSize: 14,
+    fontWeight: pw.FontWeight.bold,
+    color: PdfColors.blueGrey800,
+  );
+
+  final contentStylePw = pw.TextStyle(
+    fontSize: 13,
+    color: PdfColors.grey800,
+  );
+
+  final sidebarTitleStylePw = pw.TextStyle(
+    fontSize: 15,
+    fontWeight: pw.FontWeight.bold,
+    color: PdfColors.white,
+  );
+
+  final sidebarContentStylePw = pw.TextStyle(
+    fontSize: 13,
+    color: PdfColors.grey200,
+  );
+
+  void buildPdf() {
     pdf.addPage(
       pw.Page(
+        margin: const pw.EdgeInsets.all(0), // Remove margin for full bleed sidebar
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.helvetica(),
+          bold: pw.Font.helveticaBold(),
+        ),
         build: (pw.Context context) {
           return pw.Row(
-            children: [
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [ // Left Sidebar (Dark background)
+              pw.Container(
+                width: 170,
+                height: 842, // A4 height
+                color: PdfColors.blueGrey800,
+                padding: const pw.EdgeInsets.all(15),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    // Profile Photo
+                    pw.Center(
+                      child: Global.image != null
+                          ? pw.Container(
+                        width: 100,
+                        height: 100,
+                        decoration: pw.BoxDecoration(
+                          shape: pw.BoxShape.circle,
+                          border: pw.Border.all(color: PdfColors.white, width: 2),
+                        ),
+                        child: pw.ClipOval(
+                          child: pw.Image(image, fit: pw.BoxFit.cover),
+                        ),
+                      )
+                          : pw.Container(),
+                    ),
+                    pw.SizedBox(height: 20),
+
+                    // Contact Information
+                    buildSidebarSectionPw("CONTACT"),
+                    pw.SizedBox(height: 8),
+                    if (Global.email != null)
+                      buildSidebarItemWithIconPw("✉️", Global.email!),
+                    if (Global.phone != null)
+                      buildSidebarItemWithIconPw("📱", Global.phone!),
+
+                    pw.SizedBox(height: 15),
+
+                    // Education
+                    buildSidebarSectionPw("EDUCATION"),
+                    pw.SizedBox(height: 8),
+                    buildEducationSidebarPw(),
+                    pw.SizedBox(height: 15),
+
+                    // Skills
+                    buildSidebarSectionPw("SKILLS"),
+                    pw.SizedBox(height: 8),
+                    buildSkillsSidebarPw(),
+                    pw.SizedBox(height: 15),
+
+                    // Languages
+                    buildSidebarSectionPw("LANGUAGES"),
+                    pw.SizedBox(height: 8),
+                    buildLanguagesSidebarPw(),
+                  ],
+                ),
+              ),
+
+              // Main content area
               pw.Expanded(
-                flex: 6,
                 child: pw.Container(
-                  padding: const pw.EdgeInsets.only(left: 10),
+                  padding: const pw.EdgeInsets.all(20),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.SizedBox(height: 10),
-                      educationPW(),
-                      pw.Spacer(),
-                      technicalSkillsPW(),
-                      pw.Spacer(),
-                      achievementPW(),
-                      pw.Spacer(),
-                      carrierObjectivePW(),
-                      pw.Spacer(),
-                      projectsPW(),
-                      pw.Spacer(),
-                      experiencePW(),
-                      pw.Spacer(),
-                      referencePW(),
-                      pw.SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-              ),
-              pw.Expanded(
-                flex: 4,
-                child: pw.Column(
-                  children: [
-                    pw.Expanded(
-                      child: pw.Column(
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                      // Header with Name and Title
+                      pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.end,
                         children: [
-                          pw.Container(
-                            height: 130,
-                            width: 130,
-                            child: pw.ClipRRect(
-                              horizontalRadius: 65,
-                              verticalRadius: 65,
-                              child: pw.Image(image, fit: pw.BoxFit.cover),
-                            ),
-                          ),
-                          (Global.name != null)
-                              ? pw.Text(
-                                  "${Global.name}",
-                                  textAlign: pw.TextAlign.center,
-                                  style: pw.TextStyle(
-                                    fontSize: 17,
-                                    color: PdfColors.blue900,
-                                    fontWeight: pw.FontWeight.bold,
+                          if (Global.name != null)
+                            pw.RichText(
+                              text: pw.TextSpan(
+                                children: [
+                                  pw.TextSpan(
+                                    text: Global.name!.split(' ').first + ' ',
+                                    style: nameStylePw,
                                   ),
-                                )
-                              : pw.Container(),
+                                  pw.TextSpan(
+                                    text: Global.name!.split(' ').skip(1).join(' '),
+                                    style: nameAccentStylePw,
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
-                    ),
-                    pw.Expanded(
-                      flex: 3,
-                      child: pw.Container(
-                        width: double.infinity,
-                        decoration: const pw.BoxDecoration(
-                          color: PdfColors.blue900,
-                          borderRadius: pw.BorderRadius.only(
-                            topLeft: pw.Radius.circular(20),
+                      if (Global.careerObjectiveExperienced != null)
+                        pw.Text(
+                          Global.careerObjectiveExperienced!.toUpperCase(),
+                          style: pw.TextStyle(
+                            fontSize: 14,
+                            color: PdfColors.grey700,
                           ),
                         ),
-                        padding: const pw.EdgeInsets.only(left: 10),
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            pw.SizedBox(height: 10),
-                            contactInFoPW(),
-                            pw.Spacer(),
-                            personalDetailsPW(),
-                            pw.Spacer(),
-                            interestHobbiesPW(),
-                            pw.Spacer(),
-                            declarationPW(),
-                            pw.SizedBox(height: 12),
-                          ],
+                      pw.SizedBox(height: 5),
+                      pw.Divider(color: PdfColors.blue800, thickness: 3, ),
+                      pw.SizedBox(height: 15),
+
+                      // Profile/Career Objective
+                      pw.Text("PROFILE", style: sectionTitleStylePw),
+                      pw.SizedBox(height: 8),
+                      if (Global.careerObjectiveDescription != null)
+                        pw.Text(
+                          Global.careerObjectiveDescription!,
+                          style: contentStylePw,
                         ),
-                      ),
-                    ),
-                  ],
+                      pw.SizedBox(height: 15),
+
+                      // Work Experience
+                      pw.Text("WORK EXPERIENCE", style: sectionTitleStylePw),
+                      pw.SizedBox(height: 8),
+                      buildExperiencePw(),
+                      pw.SizedBox(height: 15),
+
+                      // Projects
+                      buildProjectsPw(),
+                      pw.SizedBox(height: 15),
+
+                      // Achievements
+                      buildAchievementsPw(),
+                      pw.SizedBox(height: 15),
+
+                      // References
+                      buildReferencesPw(),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -148,619 +276,367 @@ class _PDF_PageState extends State<PDF_Page> {
     return Scaffold(
       appBar: AppBar(
         leading: backButton(context),
-        title: const Text("PDF"),
+        title: const Text("Resume Preview"),
         centerTitle: true,
-        backgroundColor: MyColor,
+        backgroundColor: myColor,
         actions: [
-          InkWell(
-            onTap: () async {
+          IconButton(
+            icon: const Icon(Icons.save_alt_outlined),
+            onPressed: () async {
               Directory? dir = await getExternalStorageDirectory();
 
-              File file = File("${dir!.path}/my.pdf");
+              File file = File("${dir!.path}/my_resume.pdf");
 
               await file.writeAsBytes(await pdf.save());
 
               // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text("PDF Save Successfully..."),
+                  content: const Text("PDF Saved Successfully"),
                   behavior: SnackBarBehavior.floating,
                   action: SnackBarAction(
-                      label: "Open",
-                      onPressed: () async {
-                        await OpenFile.open(file.path);
-                      }),
+                    label: "Open",
+                    onPressed: () async {
+                      await OpenFile.open(file.path);
+                    },
+                  ),
                 ),
               );
             },
-            child: const SizedBox(
-              width: 60,
-              child: Icon(Icons.save_alt_outlined),
-            ),
           ),
-          InkWell(
-            onTap: () async {
+          IconButton(
+            icon: const Icon(Icons.print),
+            onPressed: () async {
               Uint8List bytes = await pdf.save();
-
               await Printing.layoutPdf(onLayout: (format) => bytes);
             },
-            child: const SizedBox(
-              width: 60,
-              child: Icon(Icons.print),
-            ),
           ),
         ],
       ),
-      body: Row(
+      body: PdfPreview(
+        build: (format) => pdf.save(),
+        canChangeOrientation: false,
+        canChangePageFormat: false,
+        canDebug: false,
+      ),
+    );
+  }
+
+  // Helper method for sidebar items with icons
+  pw.Widget buildSidebarItemWithIconPw(String icon, String text) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 5),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 6,
-            child: Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  education(),
-                  const Spacer(),
-                  technicalSkills(),
-                  const Spacer(),
-                  achievement(),
-                  const Spacer(),
-                  carrierObjective(),
-                  const Spacer(),
-                  projects(),
-                  const Spacer(),
-                  experience(),
-                  const Spacer(),
-                  reference(),
-                  const SizedBox(height: 12),
-                ],
-              ),
-            ),
+          pw.Container(
+            width: 16,
+            child: pw.Text(icon, style: sidebarContentStylePw),
           ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: image2,
-                        radius: 55,
-                      ),
-                      (Global.name != null)
-                          ? Text(
-                              "${Global.name}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: Colors.blue.shade900,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade900,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                      ),
-                    ),
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        contactInFo(),
-                        const Spacer(),
-                        personalDetails(),
-                        const Spacer(),
-                        interestHobbies(),
-                        const Spacer(),
-                        declaration(),
-                        const SizedBox(height: 12),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          pw.SizedBox(width: 5),
+          pw.Expanded(
+            child: pw.Text(text, style: sidebarContentStylePw),
           ),
         ],
       ),
     );
   }
 
-  Widget contactInFo() {
-    if (Global.email != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Contact info", style: titleStyle),
-          const SizedBox(height: 3),
-          Text(" - ${Global.phone}", style: detailStyle),
-          Text(" - ${Global.email}", style: detailStyle),
-          Text(" - ${Global.address1}", style: detailStyle),
-          (Global.address2 != "")
-              ? Text(" - ${Global.address2}", style: detailStyle)
-              : Container(),
-          (Global.address3 != "")
-              ? Text(" - ${Global.address3}", style: detailStyle)
-              : Container(),
-        ],
-      );
-    } else {
-      return Container();
-    }
+  // Helper method for sidebar section headers
+  pw.Widget buildSidebarSectionPw(String title) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text(title, style: sidebarTitleStylePw),
+        pw.SizedBox(height: 3),
+        pw.Divider(color: PdfColors.white, thickness: 0.5),
+      ],
+    );
   }
 
-  Widget personalDetails() {
-    if (Global.dateOfBirth != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Personal Details", style: titleStyle),
-          const SizedBox(height: 3),
-          Text("DOB : ${Global.dateOfBirth}", style: detailStyle),
-          (Global.maritalStatus != null)
-              ? Text("Marital Status : ${Global.maritalStatus}",
-                  style: detailStyle)
-              : Container(),
-          Text("Nationality : ${Global.nationality}", style: detailStyle),
-          const SizedBox(height: 10),
-          Text("Language :", style: titleStyle),
-          const SizedBox(height: 3),
-          (Global.englishCheckBox == true)
-              ? Text(" - English", style: detailStyle)
-              : Container(),
-          (Global.hindiCheckBox == true)
-              ? Text(" - Hindi", style: detailStyle)
-              : Container(),
-          (Global.gujratiCheckBox == true)
-              ? Text(" - Gujarati", style: detailStyle)
-              : Container(),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget interestHobbies() {
-    if (Global.interestHobbies.isNotEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Interest & Hobbies ", style: titleStyle),
-          const SizedBox(height: 3),
-          ...Global.interestHobbies.map(
-            (e) => Text(" - $e", style: detailStyle),
-          )
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget declaration() {
-    if (Global.declarationDecscription != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Declaration", style: titleStyle),
-          const SizedBox(height: 3),
-          Text("${Global.declarationDecscription}", style: detailStyle),
-          const SizedBox(height: 3),
-          Text("Date : ${Global.declarationDate}", style: detailStyle),
-          Text("Place : ${Global.declarationPlace}", style: detailStyle),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget education() {
-    if (Global.course != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Education", style: titleStyle2),
-          const SizedBox(height: 3),
-          Text(" - ${Global.course}", style: detailStyle2),
-          Text(" - ${Global.collage}", style: detailStyle2),
-          Text(" - ${Global.marks}", style: detailStyle2),
-          Text(" - ${Global.passYear}", style: detailStyle2),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget technicalSkills() {
-    if (Global.technicalSkills.isNotEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Technical Skills", style: titleStyle2),
-          const SizedBox(height: 3),
-          ...Global.technicalSkills.map(
-            (e) => Text(" - $e", style: detailStyle2),
-          )
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget achievement() {
-    if (Global.achievement.isNotEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Achievement", style: titleStyle2),
-          const SizedBox(height: 3),
-          ...Global.achievement.map(
-            (e) => Text(" - $e", style: detailStyle2),
-          )
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget carrierObjective() {
-    if (Global.careerObjectiveDescription != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Carrier Objective", style: titleStyle2),
-          const SizedBox(height: 3),
-          Text(" - ${Global.careerObjectiveDescription}", style: detailStyle2),
-          const SizedBox(height: 3),
-          Text("Designation : ${Global.careerObjectiveExperienced}",
-              style: detailStyle2),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget projects() {
-    if (Global.projectTitle != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Projects", style: titleStyle2),
-          const SizedBox(height: 3),
-          Text("Title : ${Global.projectTitle}", style: detailStyle2),
-          Text("Roles : ${Global.projectRoles}", style: detailStyle2),
-          Text("Technologies : ${Global.projectTechnologies}",
-              style: detailStyle2),
-          Text("Description : ${Global.projectDescription}",
-              style: detailStyle2),
-          const SizedBox(height: 3),
-          Text("Technologies :", style: detailStyle2),
-          const SizedBox(height: 3),
-          (Global.projectCheckBoxCProgramming == true)
-              ? Text(" - C Programming", style: detailStyle2)
-              : Container(),
-          (Global.projectCheckBoxCPP == true)
-              ? Text(" - C ++", style: detailStyle2)
-              : Container(),
-          (Global.projectCheckBoxFlutter == true)
-              ? Text(" - Flutter", style: detailStyle2)
-              : Container(),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget experience() {
-    if (Global.experienceCompanyName != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Experience", style: titleStyle2),
-          const SizedBox(height: 3),
-          Text("Company Name : ${Global.experienceCompanyName}",
-              style: detailStyle2),
-          Text("Designation : ${Global.experienceCollage}",
-              style: detailStyle2),
-          (Global.experienceRole != "")
-              ? Text("Roles : ${Global.experienceRole}", style: detailStyle2)
-              : Container(),
-          (Global.experienceJoinDate != null)
-              ? Text("Join Date : ${Global.experienceJoinDate}",
-                  style: detailStyle2)
-              : Container(),
-          (Global.experienceExitDate != null)
-              ? Text("Exit Date : ${Global.experienceExitDate}",
-                  style: detailStyle2)
-              : Container(),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget reference() {
-    if (Global.referenceName != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Reference", style: titleStyle2),
-          const SizedBox(height: 3),
-          Text("Reference Name : ${Global.referenceName}", style: detailStyle2),
-          Text("Designation : ${Global.referenceDesignation}",
-              style: detailStyle2),
-          Text("Organization : ${Global.referenceOrganization}",
-              style: detailStyle2),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  contactInFoPW() {
-    if (Global.email != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Contact info", style: titleStylePW),
-          pw.SizedBox(height: 3),
-          pw.Text(" - ${Global.phone}", style: detailStylePW),
-          pw.Text(" - ${Global.email}", style: detailStylePW),
-          pw.Text(" - ${Global.address1}", style: detailStylePW),
-          (Global.address2 != "")
-              ? pw.Text(" - ${Global.address2}", style: detailStylePW)
-              : pw.Container(),
-          (Global.address3 != "")
-              ? pw.Text(" - ${Global.address3}", style: detailStylePW)
-              : pw.Container(),
-        ],
-      );
-    } else {
+  // Helper method for education entries in sidebar
+  pw.Widget buildEducationSidebarPw() {
+    if (Global.course == null && Global.collage == null) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        if (Global.passYear != null)
+          pw.Text(
+            Global.passYear!,
+            style: pw.TextStyle(
+              fontSize: 12,
+              color: PdfColors.white,
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+        pw.SizedBox(height: 3),
+        pw.Text(
+          Global.course ?? "",
+          style: pw.TextStyle(
+            fontSize: 12,
+            color: PdfColors.white,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),
+        pw.Text(
+          Global.collage ?? "",
+          style: sidebarContentStylePw,
+        ),
+        pw.SizedBox(height: 8),
+      ],
+    );
   }
 
-  personalDetailsPW() {
-    if (Global.dateOfBirth != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Personal Details", style: titleStylePW),
-          pw.SizedBox(height: 3),
-          pw.Text("DOB : ${Global.dateOfBirth}", style: detailStylePW),
-          (Global.maritalStatus != null)
-              ? pw.Text("Marital Status : ${Global.maritalStatus}",
-                  style: detailStylePW)
-              : pw.Container(),
-          pw.Text("Nationality : ${Global.nationality}", style: detailStylePW),
-          pw.SizedBox(height: 10),
-          pw.Text("Language :", style: titleStylePW),
-          pw.SizedBox(height: 3),
-          (Global.englishCheckBox == true)
-              ? pw.Text(" - English", style: detailStylePW)
-              : pw.Container(),
-          (Global.hindiCheckBox == true)
-              ? pw.Text(" - Hindi", style: detailStylePW)
-              : pw.Container(),
-          (Global.gujratiCheckBox == true)
-              ? pw.Text(" - Gujarati", style: detailStylePW)
-              : pw.Container(),
-        ],
-      );
-    } else {
+  // Helper method for skills in sidebar
+  pw.Widget buildSkillsSidebarPw() {
+    if (Global.technicalSkills.isEmpty) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: Global.technicalSkills.map((skill) {
+        return pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 5),
+          child: pw.Text("• $skill", style: sidebarContentStylePw),
+        );
+      }).toList(),
+    );
   }
 
-  interestHobbiesPW() {
-    if (Global.interestHobbies.isNotEmpty) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Interest & Hobbies ", style: titleStylePW),
-          pw.SizedBox(height: 3),
-          ...Global.interestHobbies.map(
-            (e) => pw.Text(" - $e", style: detailStylePW),
-          )
-        ],
-      );
-    } else {
+  // Helper method for languages in sidebar
+  pw.Widget buildLanguagesSidebarPw() {
+    List<String> languages = [];
+
+    if (Global.englishCheckBox) languages.add("English (Fluent)");
+    if (Global.hindiCheckBox) languages.add("Hindi (Fluent)");
+    if (Global.gujratiCheckBox) languages.add("Gujarati (Native)");
+
+    if (languages.isEmpty) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: languages.map((language) {
+        return pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 5),
+          child: pw.Text("• $language", style: sidebarContentStylePw),
+        );
+      }).toList(),
+    );
   }
 
-  declarationPW() {
-    if (Global.declarationDecscription != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Declaration", style: titleStylePW),
-          pw.SizedBox(height: 3),
-          pw.Text("${Global.declarationDecscription}", style: detailStylePW),
-          pw.SizedBox(height: 3),
-          pw.Text("Date : ${Global.declarationDate}", style: detailStylePW),
-          pw.Text("Place : ${Global.declarationPlace}", style: detailStylePW),
-        ],
-      );
-    } else {
+  pw.Widget buildExperiencePw() {
+    if (Global.experienceCompanyName == null) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            // Left side (bullet point)
+            pw.Container(
+              width: 10,
+              padding: const pw.EdgeInsets.only(top: 3),
+              child: pw.Text("•", style: contentStylePw),
+            ),
+            pw.SizedBox(width: 5),
+            // Right side (content)
+            pw.Expanded(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Expanded(
+                        child: pw.Text(
+                          Global.experienceCollage ?? "",
+                          style: contentTitleStylePw,
+                        ),
+                      ),
+                      if (Global.experienceJoinDate != null && Global.experienceExitDate != null)
+                        pw.Text(
+                          "${Global.experienceJoinDate} - ${Global.experienceExitDate}",
+                          style: contentStylePw,
+                        ),
+                    ],
+                  ),
+                  pw.Text(
+                    Global.experienceCompanyName ?? "",
+                    style: contentStylePw,
+                  ),
+                  pw.SizedBox(height: 5),
+                  if (Global.experienceRole != null && Global.experienceRole != "")
+                    pw.Text(
+                      "• ${Global.experienceRole}",
+                      style: contentStylePw,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
-  educationPW() {
-    if (Global.course != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Education", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text(" - ${Global.course}", style: detailStyle2PW),
-          pw.Text(" - ${Global.collage}", style: detailStyle2PW),
-          pw.Text(" - ${Global.marks}", style: detailStyle2PW),
-          pw.Text(" - ${Global.passYear}", style: detailStyle2PW),
-        ],
-      );
-    } else {
+  pw.Widget buildProjectsPw() {
+    if (Global.projectTitle == null) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text("PROJECTS", style: sectionTitleStylePw),
+        pw.SizedBox(height: 8),
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            // Left side (bullet point)
+            pw.Container(
+              width: 10,
+              padding: const pw.EdgeInsets.only(top: 3),
+              child: pw.Text("•", style: contentStylePw),
+            ),
+            pw.SizedBox(width: 5),
+            // Right side (content)
+            pw.Expanded(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    Global.projectTitle ?? "",
+                    style: contentTitleStylePw,
+                  ),
+                  pw.SizedBox(height: 3),
+                  if (Global.projectDescription != null)
+                    pw.Text(
+                      Global.projectDescription!,
+                      style: contentStylePw,
+                    ),
+                  pw.SizedBox(height: 5),
+                  pw.Text(
+                    "Role: ${Global.projectRoles ?? ""}",
+                    style: contentStylePw,
+                  ),
+                  pw.SizedBox(height: 3),
+                  pw.Text(
+                    "Technologies:",
+                    style: contentStylePw,
+                  ),
+                  pw.SizedBox(height: 2),
+                  pw.Row(
+                    children: [
+                      if (Global.projectCheckBoxCProgramming == true)
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          margin: const pw.EdgeInsets.only(right: 5),
+                          decoration: pw.BoxDecoration(
+                            color: PdfColors.blue50,
+                            borderRadius: pw.BorderRadius.circular(3),
+                          ),
+                          child: pw.Text("C Programming", style: contentStylePw),
+                        ),
+                      if (Global.projectCheckBoxCPP == true)
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          margin: const pw.EdgeInsets.only(right: 5),
+                          decoration: pw.BoxDecoration(
+                            color: PdfColors.blue50,
+                            borderRadius: pw.BorderRadius.circular(3),
+                          ),
+                          child: pw.Text("C++", style: contentStylePw),
+                        ),
+                      if (Global.projectCheckBoxFlutter == true)
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          margin: const pw.EdgeInsets.only(right: 5),
+                          decoration: pw.BoxDecoration(
+                            color: PdfColors.blue50,
+                            borderRadius: pw.BorderRadius.circular(3),
+                          ),
+                          child: pw.Text("Flutter", style: contentStylePw),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
-  technicalSkillsPW() {
-    if (Global.technicalSkills.isNotEmpty) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Technical Skills", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          ...Global.technicalSkills.map(
-            (e) => pw.Text(" - $e", style: detailStyle2PW),
-          )
-        ],
-      );
-    } else {
+  pw.Widget buildAchievementsPw() {
+    if (Global.achievement.isEmpty) {
       return pw.Container();
     }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text("ACHIEVEMENTS", style: sectionTitleStylePw),
+        pw.SizedBox(height: 5),
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: Global.achievement.map((achievement) {
+            return pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 3),
+              child: pw.Text(
+                "• $achievement",
+                style: contentStylePw,
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 
-  achievementPW() {
-    if (Global.achievement.isNotEmpty) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Achievement", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          ...Global.achievement.map(
-            (e) => pw.Text(" - $e", style: detailStyle2PW),
-          )
-        ],
-      );
-    } else {
+  pw.Widget buildReferencesPw() {
+    if (Global.referenceName == null) {
       return pw.Container();
     }
-  }
 
-  carrierObjectivePW() {
-    if (Global.careerObjectiveDescription != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Carrier Objective", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text(" - ${Global.careerObjectiveDescription}",
-              style: detailStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text("Designation : ${Global.careerObjectiveExperienced}",
-              style: detailStyle2PW),
-        ],
-      );
-    } else {
-      return pw.Container();
-    }
-  }
-
-  projectsPW() {
-    if (Global.projectTitle != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Projects", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text("Title : ${Global.projectTitle}", style: detailStyle2PW),
-          pw.Text("Roles : ${Global.projectRoles}", style: detailStyle2PW),
-          pw.Text("Technologies : ${Global.projectTechnologies}",
-              style: detailStyle2PW),
-          pw.Text("Description : ${Global.projectDescription}",
-              style: detailStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text("Technologies :", style: detailStyle2PW),
-          pw.SizedBox(height: 3),
-          (Global.projectCheckBoxCProgramming == true)
-              ? pw.Text(" - C Programming", style: detailStyle2PW)
-              : pw.Container(),
-          (Global.projectCheckBoxCPP == true)
-              ? pw.Text(" - C ++", style: detailStyle2PW)
-              : pw.Container(),
-          (Global.projectCheckBoxFlutter == true)
-              ? pw.Text(" - Flutter", style: detailStyle2PW)
-              : pw.Container(),
-        ],
-      );
-    } else {
-      return pw.Container();
-    }
-  }
-
-  experiencePW() {
-    if (Global.experienceCompanyName != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Experience", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text("Company Name : ${Global.experienceCompanyName}",
-              style: detailStyle2PW),
-          pw.Text("Designation : ${Global.experienceCollage}",
-              style: detailStyle2PW),
-          (Global.experienceRole != "")
-              ? pw.Text("Roles : ${Global.experienceRole}",
-                  style: detailStyle2PW)
-              : pw.Container(),
-          (Global.experienceJoinDate != null)
-              ? pw.Text("Join Date : ${Global.experienceJoinDate}",
-                  style: detailStyle2PW)
-              : pw.Container(),
-          (Global.experienceExitDate != null)
-              ? pw.Text("Exit Date : ${Global.experienceExitDate}",
-                  style: detailStyle2PW)
-              : pw.Container(),
-        ],
-      );
-    } else {
-      return pw.Container();
-    }
-  }
-
-  referencePW() {
-    if (Global.referenceName != null) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text("Reference", style: titleStyle2PW),
-          pw.SizedBox(height: 3),
-          pw.Text("Reference Name : ${Global.referenceName}",
-              style: detailStyle2PW),
-          pw.Text("Designation : ${Global.referenceDesignation}",
-              style: detailStyle2PW),
-          pw.Text("Organization : ${Global.referenceOrganization}",
-              style: detailStyle2PW),
-        ],
-      );
-    } else {
-      return pw.Container();
-    }
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text("REFERENCE", style: sectionTitleStylePw),
+        pw.SizedBox(height: 8),
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Expanded(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    Global.referenceName ?? "",
+                    style: contentTitleStylePw,
+                  ),
+                  pw.Text(
+                    "${Global.referenceDesignation ?? ""}, ${Global
+                        .referenceOrganization ?? ""}",
+                    style: contentStylePw,
+                  ),
+                  // Removed the referencePhone and referenceEmail fields that aren't in your Global class
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

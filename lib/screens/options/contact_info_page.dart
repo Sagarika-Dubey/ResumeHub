@@ -250,82 +250,6 @@ class _contact_info_pageState extends State<contact_info_page> {
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Image.asset(
-                                            "assets/icons/pin.png",
-                                            height: _height * 0.048,
-                                          ),
-                                        ),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: address1Controller,
-                                            validator: (val) {
-                                              if (val!.isEmpty) {
-                                                return "Enter your Address First...";
-                                              }
-                                              return null;
-                                            },
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.address1 = val;
-                                              });
-                                            },
-                                            decoration: const InputDecoration(
-                                              hintText:
-                                                  "Address (Street, Building No)",
-                                              label: Text(
-                                                  "Address (Street, Building No)"),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(child: Container()),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: address2Controller,
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.address2 = val;
-                                              });
-                                            },
-                                            decoration: const InputDecoration(
-                                              hintText: "Address Line 2",
-                                              label: Text("Address Line 2"),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(child: Container()),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: address3Controller,
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.address3 = val;
-                                              });
-                                            },
-                                            decoration: const InputDecoration(
-                                              hintText: "Address Line 3",
-                                              label: Text("Address Line 3"),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ),
@@ -361,9 +285,6 @@ class _contact_info_pageState extends State<contact_info_page> {
                                     Global.name = null;
                                     Global.email = null;
                                     Global.phone = null;
-                                    Global.address1 = null;
-                                    Global.address2 = null;
-                                    Global.address3 = null;
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
