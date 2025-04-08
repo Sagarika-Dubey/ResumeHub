@@ -10,6 +10,8 @@ import 'package:resumehub/screens/backButton.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import 'package:resumehub/screens/resume_templatescreen.dart';
+
 class PDF_Page extends StatefulWidget {
   PDF_Page({Key? key}) : super(key: key);
 
@@ -129,7 +131,8 @@ class _PDF_PageState extends State<PDF_Page> {
   void buildPdf() {
     pdf.addPage(
       pw.Page(
-        margin: const pw.EdgeInsets.all(0), // Remove margin for full bleed sidebar
+        margin:
+            const pw.EdgeInsets.all(0), // Remove margin for full bleed sidebar
         theme: pw.ThemeData.withFont(
           base: pw.Font.helvetica(),
           bold: pw.Font.helveticaBold(),
@@ -137,7 +140,8 @@ class _PDF_PageState extends State<PDF_Page> {
         build: (pw.Context context) {
           return pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [ // Left Sidebar (Dark background)
+            children: [
+              // Left Sidebar (Dark background)
               pw.Container(
                 width: 170,
                 height: 842, // A4 height
@@ -150,16 +154,17 @@ class _PDF_PageState extends State<PDF_Page> {
                     pw.Center(
                       child: Global.image != null
                           ? pw.Container(
-                        width: 100,
-                        height: 100,
-                        decoration: pw.BoxDecoration(
-                          shape: pw.BoxShape.circle,
-                          border: pw.Border.all(color: PdfColors.white, width: 2),
-                        ),
-                        child: pw.ClipOval(
-                          child: pw.Image(image, fit: pw.BoxFit.cover),
-                        ),
-                      )
+                              width: 100,
+                              height: 100,
+                              decoration: pw.BoxDecoration(
+                                shape: pw.BoxShape.circle,
+                                border: pw.Border.all(
+                                    color: PdfColors.white, width: 2),
+                              ),
+                              child: pw.ClipOval(
+                                child: pw.Image(image, fit: pw.BoxFit.cover),
+                              ),
+                            )
                           : pw.Container(),
                     ),
                     pw.SizedBox(height: 20),
@@ -214,7 +219,10 @@ class _PDF_PageState extends State<PDF_Page> {
                                     style: nameStylePw,
                                   ),
                                   pw.TextSpan(
-                                    text: Global.name!.split(' ').skip(1).join(' '),
+                                    text: Global.name!
+                                        .split(' ')
+                                        .skip(1)
+                                        .join(' '),
                                     style: nameAccentStylePw,
                                   ),
                                 ],
@@ -231,7 +239,10 @@ class _PDF_PageState extends State<PDF_Page> {
                           ),
                         ),
                       pw.SizedBox(height: 5),
-                      pw.Divider(color: PdfColors.blue800, thickness: 3, ),
+                      pw.Divider(
+                        color: PdfColors.blue800,
+                        thickness: 3,
+                      ),
                       pw.SizedBox(height: 15),
 
                       // Profile/Career Objective
@@ -463,7 +474,8 @@ class _PDF_PageState extends State<PDF_Page> {
                           style: contentTitleStylePw,
                         ),
                       ),
-                      if (Global.experienceJoinDate != null && Global.experienceExitDate != null)
+                      if (Global.experienceJoinDate != null &&
+                          Global.experienceExitDate != null)
                         pw.Text(
                           "${Global.experienceJoinDate} - ${Global.experienceExitDate}",
                           style: contentStylePw,
@@ -475,7 +487,8 @@ class _PDF_PageState extends State<PDF_Page> {
                     style: contentStylePw,
                   ),
                   pw.SizedBox(height: 5),
-                  if (Global.experienceRole != null && Global.experienceRole != "")
+                  if (Global.experienceRole != null &&
+                      Global.experienceRole != "")
                     pw.Text(
                       "• ${Global.experienceRole}",
                       style: contentStylePw,
@@ -539,17 +552,20 @@ class _PDF_PageState extends State<PDF_Page> {
                     children: [
                       if (Global.projectCheckBoxCProgramming == true)
                         pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const pw.EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           margin: const pw.EdgeInsets.only(right: 5),
                           decoration: pw.BoxDecoration(
                             color: PdfColors.blue50,
                             borderRadius: pw.BorderRadius.circular(3),
                           ),
-                          child: pw.Text("C Programming", style: contentStylePw),
+                          child:
+                              pw.Text("C Programming", style: contentStylePw),
                         ),
                       if (Global.projectCheckBoxCPP == true)
                         pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const pw.EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           margin: const pw.EdgeInsets.only(right: 5),
                           decoration: pw.BoxDecoration(
                             color: PdfColors.blue50,
@@ -559,7 +575,8 @@ class _PDF_PageState extends State<PDF_Page> {
                         ),
                       if (Global.projectCheckBoxFlutter == true)
                         pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const pw.EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           margin: const pw.EdgeInsets.only(right: 5),
                           decoration: pw.BoxDecoration(
                             color: PdfColors.blue50,
@@ -626,8 +643,7 @@ class _PDF_PageState extends State<PDF_Page> {
                     style: contentTitleStylePw,
                   ),
                   pw.Text(
-                    "${Global.referenceDesignation ?? ""}, ${Global
-                        .referenceOrganization ?? ""}",
+                    "${Global.referenceDesignation ?? ""}, ${Global.referenceOrganization ?? ""}",
                     style: contentStylePw,
                   ),
                   // Removed the referencePhone and referenceEmail fields that aren't in your Global class

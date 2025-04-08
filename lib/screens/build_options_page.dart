@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:resumehub/screens/resume_templatescreen.dart';
 import '../globals.dart';
 import 'backButton.dart';
 
@@ -124,14 +125,15 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
             child: InkWell(
               onTap: () {
                 if (Global.image != null) {
-                  Navigator.of(context).pushNamed("pdf_page");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ResumeTemplateSelector()));
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please add a profile image first"),
-                        behavior: SnackBarBehavior.floating,
-                      )
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Please add a profile image first"),
+                    behavior: SnackBarBehavior.floating,
+                  ));
                   Navigator.of(context).pushNamed("contact_info_page");
                 }
               },
@@ -206,7 +208,8 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
               itemBuilder: (context, index) {
                 final option = options[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -270,10 +273,10 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                             option["completed"] == true
                                 ? Icon(Icons.check_circle, color: themeColor)
                                 : Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 18,
-                              color: Colors.grey[400],
-                            ),
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 18,
+                                    color: Colors.grey[400],
+                                  ),
                           ],
                         ),
                       ),
@@ -290,14 +293,15 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
         child: const Icon(Icons.picture_as_pdf),
         onPressed: () {
           if (Global.image != null) {
-            Navigator.of(context).pushNamed("pdf_page");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ResumeTemplateSelector()));
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Please add a profile image first"),
-                  behavior: SnackBarBehavior.floating,
-                )
-            );
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Please add a profile image first"),
+              behavior: SnackBarBehavior.floating,
+            ));
             Navigator.of(context).pushNamed("contact_info_page");
           }
         },

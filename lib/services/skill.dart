@@ -89,7 +89,7 @@ class _SkillAnalysisScreenState extends State<SkillAnalysisScreen> {
     try {
       // Create a proper MultipartRequest
       var request = http.MultipartRequest(
-          'POST', Uri.parse('http://192.168.0.227:5001/api/skill'));
+          'POST', Uri.parse('http://192.168.152.184:5001/api/skill'));
 
       // Add the job description field - ensure the field name matches exactly what the API expects
       request.fields['job'] = jobDescription;
@@ -208,7 +208,7 @@ class _SkillAnalysisScreenState extends State<SkillAnalysisScreen> {
 
       final response = await http
           .post(
-        Uri.parse('http://192.168.0.227:5001/api/skill-alt'),
+        Uri.parse('http://192.168.152.184:5001/api/skill-alt'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -471,7 +471,7 @@ class _SkillAnalysisScreenState extends State<SkillAnalysisScreen> {
     });
 
     try {
-      final url = Uri.parse('http://192.168.0.227:5001/api/skill');
+      final url = Uri.parse('http://192.168.152.184:5001/api/skill');
       final response = await http.get(url).timeout(
         const Duration(seconds: 5),
         onTimeout: () {

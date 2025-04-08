@@ -25,6 +25,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:resumehub/screens/user_profile_screen.dart';
 import 'screens/categories_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import './screens/resume_templatescreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +59,7 @@ class ResumeHubApp extends StatelessWidget {
         'interest_hobbies_page': (context) => const interest_hobbies_page(),
         'projects_page': (context) => const projects_page(),
         'achievement_page': (context) => const achievement_page(),
+        'Template_selection': (context) => const ResumeTemplateSelector(),
         'pdf_page': (context) => PDF_Page(),
       },
     );
