@@ -107,7 +107,7 @@ class _carrier_objective_pageState extends State<carrier_objective_page> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "Current Designation (Experience\nCandidate)",
+                                    "Current Designation or Desired Designation",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -155,7 +155,11 @@ class _carrier_objective_pageState extends State<carrier_objective_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save", style: TextStyle(color: Colors.black),),),
+                          child: const Text(
+                            "Save",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
                         ElevatedButton(
                           onPressed: () {
                             careerObjectiveFormKey.currentState!.reset();
@@ -170,7 +174,8 @@ class _carrier_objective_pageState extends State<carrier_objective_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Clear",style: TextStyle(color: Colors.black)),
+                          child: const Text("Clear",
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

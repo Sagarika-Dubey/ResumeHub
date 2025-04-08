@@ -82,18 +82,18 @@ class _experience_pageState extends State<experience_page> {
                               },
                               controller: companyNameController,
                               decoration: const InputDecoration(
-                                hintText: "New Enterprise, San Francisco",
+                                hintText: "Enter the company's name",
                                 border: OutlineInputBorder(),
                               ),
                             ),
                             SizedBox(height: _height * 0.015),
-                            Text("School/Collage/Institute",
+                            Text("Enter your job designation",
                                 style: MyTextStyle),
                             SizedBox(height: _height * 0.015),
                             TextFormField(
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return "Enter your School/Collage/Institute First...";
+                                  return "Enter your job designation";
                                 }
                                 return null;
                               },
@@ -288,7 +288,8 @@ class _experience_pageState extends State<experience_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save",style: TextStyle(color: Colors.black)),
+                          child: const Text("Save",
+                              style: TextStyle(color: Colors.black)),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -306,7 +307,8 @@ class _experience_pageState extends State<experience_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Clear",style: TextStyle(color: Colors.black)),
+                          child: const Text("Clear",
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

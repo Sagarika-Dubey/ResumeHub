@@ -26,9 +26,14 @@ class _projects_pageState extends State<projects_page> {
 
   final TextEditingController projectTitleController = TextEditingController();
   final TextEditingController rolesController = TextEditingController();
-  final TextEditingController technologiesController = TextEditingController();
+  final TextEditingController technologyController = TextEditingController();
   final TextEditingController projectDescriptionController =
       TextEditingController();
+  final TextEditingController teamSizeController = TextEditingController();
+
+  // List to store multiple technologies
+  List<String> technologies = [];
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
@@ -86,63 +91,91 @@ class _projects_pageState extends State<projects_page> {
                               },
                               controller: projectTitleController,
                               decoration: const InputDecoration(
-                                hintText: "Resume Builder App",
+                                hintText: "Enter the Project title",
                                 border: OutlineInputBorder(),
                               ),
                             ),
                             SizedBox(height: _height * 0.015),
                             Text("Technologies", style: MyTextStyle),
                             SizedBox(height: _height * 0.015),
-                            // Chake Box
+
+                            // Technologies input with Add button
                             Row(
                               children: [
-                                Checkbox(
-                                    value: Global.projectCheckBoxCProgramming,
-                                    onChanged: (val) {
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: technologyController,
+                                    decoration: const InputDecoration(
+                                      hintText: "Enter a technology",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (technologyController.text.isNotEmpty) {
                                       setState(() {
-                                        Global.projectCheckBoxCProgramming =
-                                            val!;
+                                        technologies
+                                            .add(technologyController.text);
+                                        technologyController.clear();
                                       });
-                                    }),
-                                const SizedBox(width: 10),
-                                Text(
-                                  "C Programming",
-                                  style: myTextStyleForChackBox,
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Checkbox(
-                                    value: Global.projectCheckBoxCPP,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        Global.projectCheckBoxCPP = val!;
-                                      });
-                                    }),
-                                const SizedBox(width: 10),
-                                Text(
-                                  "C++",
-                                  style: myTextStyleForChackBox,
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Checkbox(
-                                    value: Global.projectCheckBoxFlutter,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        Global.projectCheckBoxFlutter = val!;
-                                      });
-                                    }),
-                                const SizedBox(width: 10),
-                                Text(
-                                  "Flutter",
-                                  style: myTextStyleForChackBox,
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: MyColor,
+                                  ),
+                                  child: const Text("Add",
+                                      style: TextStyle(color: Colors.black)),
                                 ),
                               ],
                             ),
+
+                            // Display the list of technologies
+                            if (technologies.isNotEmpty) ...[
+                              SizedBox(height: _height * 0.015),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Added Technologies:",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(height: 5),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: technologies.length,
+                                      itemBuilder: (context, index) {
+                                        return Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(technologies[index]),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  technologies.removeAt(index);
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+
                             SizedBox(height: _height * 0.015),
                             Text("Roles", style: MyTextStyle),
                             SizedBox(height: _height * 0.015),
@@ -166,27 +199,7 @@ class _projects_pageState extends State<projects_page> {
                                 border: OutlineInputBorder(),
                               ),
                             ),
-                            SizedBox(height: _height * 0.015),
-                            Text("Technologies", style: MyTextStyle),
-                            SizedBox(height: _height * 0.015),
-                            TextFormField(
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Enter your Technologies First...";
-                                }
-                                return null;
-                              },
-                              onSaved: (val) {
-                                setState(() {
-                                  Global.projectTechnologies = val;
-                                });
-                              },
-                              controller: technologiesController,
-                              decoration: const InputDecoration(
-                                hintText: "5 - Programmer",
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
+
                             SizedBox(height: _height * 0.015),
                             Text("Project Description", style: MyTextStyle),
                             SizedBox(height: _height * 0.015),
@@ -220,13 +233,18 @@ class _projects_pageState extends State<projects_page> {
                             if (projectFormKey.currentState!.validate()) {
                               projectFormKey.currentState!.save();
 
+                              // Save technologies to Global
+                              Global.projectTechnologies =
+                                  technologies.join(", ");
+
                               setState(() => Navigator.of(context).pop());
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save",style: TextStyle(color: Colors.black)),
+                          child: const Text("Save",
+                              style: TextStyle(color: Colors.black)),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -234,22 +252,23 @@ class _projects_pageState extends State<projects_page> {
 
                             projectTitleController.clear();
                             rolesController.clear();
-                            technologiesController.clear();
+                            technologyController.clear();
                             projectDescriptionController.clear();
+                            teamSizeController.clear();
+
                             setState(() {
+                              technologies.clear();
                               Global.projectTitle = null;
                               Global.projectRoles = null;
                               Global.projectTechnologies = null;
                               Global.projectDescription = null;
-                              Global.projectCheckBoxCProgramming = false;
-                              Global.projectCheckBoxCPP = false;
-                              Global.projectCheckBoxFlutter = false;
                             });
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Clear",style: TextStyle(color: Colors.black)),
+                          child: const Text("Clear",
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),

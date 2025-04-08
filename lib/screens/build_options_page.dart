@@ -11,7 +11,7 @@ class Build_Options_Page extends StatefulWidget {
 }
 
 class _Build_Options_PageState extends State<Build_Options_Page> {
-  final List<Map> options = [
+  final List<Map<String, dynamic>> options = [
     {
       "id": 1,
       "option_name": "Contact Information",
@@ -19,6 +19,17 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/contact_detail-removebg-preview (1).png",
       "routes": "contact_info_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.name != null &&
+              Global.name!.isNotEmpty &&
+              Global.image != null;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": true,
+      "weight": 2.0, // Higher weight for required field
     },
     {
       "id": 2,
@@ -27,6 +38,16 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/briefcase.png",
       "routes": "carrier_objective_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.careerObjectiveDescription != null &&
+              Global.careerObjectiveDescription!.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 3,
@@ -35,6 +56,18 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/prsnl_details.png",
       "routes": "personal_details_page",
       "completed": false,
+      "validator": () {
+        try {
+          // Check if any personal details are filled
+          return Global.dateOfBirth != null ||
+              Global.maritalStatus != null ||
+              Global.nationality != null;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 4,
@@ -43,6 +76,18 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/graduation-cap.png",
       "routes": "education_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.course != null &&
+              Global.course!.isNotEmpty &&
+              Global.collage != null &&
+              Global.collage!.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 5,
@@ -51,6 +96,16 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/logical-thinking.png",
       "routes": "experience_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.experienceCompanyName != null &&
+              Global.experienceCompanyName!.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 6,
@@ -59,6 +114,15 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/certificate.png",
       "routes": "technical_skills_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.technicalSkills.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 7,
@@ -67,6 +131,15 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/open-book.png",
       "routes": "interest_hobbies_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.interestHobbies.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 8,
@@ -75,6 +148,15 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/project-management.png",
       "routes": "projects_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.projectTitle != null && Global.projectTitle!.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
     {
       "id": 9,
@@ -83,23 +165,149 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       "image": "assets/icons/experience.png",
       "routes": "achievement_page",
       "completed": false,
+      "validator": () {
+        try {
+          return Global.achievement.isNotEmpty;
+        } catch (e) {
+          return false;
+        }
+      },
+      "required": false,
+      "weight": 1.0,
     },
   ];
 
   @override
   void initState() {
     super.initState();
-    // Update completion status based on Global data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateCompletionStatus();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _updateCompletionStatus();
   }
 
+  // This function updates the completion status of each option
   void _updateCompletionStatus() {
-    // This is a placeholder - you would check Global data to see if sections are completed
-    // For example: options[0]["completed"] = Global.contactInfo != null;
+    setState(() {
+      for (var option in options) {
+        Function validator = option["validator"];
+        try {
+          bool isCompleted = validator();
+          option["completed"] = isCompleted;
+        } catch (e) {
+          print("Error validating ${option['option_name']}: $e");
+          option["completed"] = false;
+        }
+      }
+    });
+  }
+
+  // Calculate progress percentage taking weights into account
+  double _calculateProgress() {
+    double totalWeight = 0;
+    double completedWeight = 0;
+
+    for (var option in options) {
+      double weight = option["weight"] ?? 1.0;
+      totalWeight += weight;
+
+      if (option["completed"] == true) {
+        completedWeight += weight;
+      }
+    }
+
+    // Prevent division by zero
+    if (totalWeight == 0) return 0;
+
+    return completedWeight / totalWeight;
   }
 
   int _completedSections() {
     return options.where((option) => option["completed"] == true).length;
+  }
+
+  // Check if basic requirements (name and photo) are met
+  bool _areBasicRequirementsMet() {
+    try {
+      return Global.name != null &&
+          Global.name!.isNotEmpty &&
+          Global.image != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  String _getMissingBasicRequirements() {
+    List<String> missing = [];
+
+    try {
+      if (Global.name == null || Global.name!.isEmpty) {
+        missing.add("Name");
+      }
+
+      if (Global.image == null) {
+        missing.add("Photo");
+      }
+    } catch (e) {
+      // If there's an error, assume both are missing
+      return "Name and Photo";
+    }
+
+    return missing.join(' and ');
+  }
+
+  void _navigateToResumeTemplates() {
+    if (_areBasicRequirementsMet()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ResumeTemplateSelector()),
+      ).then((_) {
+        _updateCompletionStatus();
+      });
+    } else {
+      // Show error for missing basic requirements
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Please add your ${_getMissingBasicRequirements()} in Contact Information"),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'GO TO CONTACT',
+          onPressed: () {
+            Navigator.of(context).pushNamed("contact_info_page");
+          },
+        ),
+      ));
+    }
+  }
+
+  void _navigateToSection(String route) {
+    Navigator.of(context).pushNamed(route).then((_) {
+      // Important: Update completion status when returning from a section
+      _updateCompletionStatus();
+    });
+  }
+
+  // Get status message based on completion status
+  String _getStatusMessage() {
+    double progress = _calculateProgress();
+
+    if (!_areBasicRequirementsMet()) {
+      return "Add your ${_getMissingBasicRequirements()} to generate resume";
+    } else if (progress < 0.3) {
+      return "Getting started! Add more details";
+    } else if (progress < 0.6) {
+      return "Making good progress! Keep going";
+    } else if (progress < 1.0) {
+      return "Almost there! Add final details";
+    } else {
+      return "All sections complete! Ready to generate";
+    }
   }
 
   @override
@@ -107,7 +315,9 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
     final themeColor = const Color(0xff2c8cfb);
     final accentColor = themeColor.withOpacity(0.1);
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Calculate progress percentage for the progress bar
+    final double progressPercentage = _calculateProgress();
 
     return Scaffold(
       appBar: AppBar(
@@ -119,31 +329,6 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
         ),
         centerTitle: true,
         elevation: 0,
-        actions: [
-          Tooltip(
-            message: "Generate PDF",
-            child: InkWell(
-              onTap: () {
-                if (Global.image != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ResumeTemplateSelector()));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Please add a profile image first"),
-                    behavior: SnackBarBehavior.floating,
-                  ));
-                  Navigator.of(context).pushNamed("contact_info_page");
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const Icon(Icons.picture_as_pdf),
-              ),
-            ),
-          )
-        ],
       ),
       body: Column(
         children: [
@@ -170,7 +355,8 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
-                          value: _completedSections() / options.length,
+                          value:
+                              progressPercentage, // Use calculated percentage
                           backgroundColor: Colors.white.withOpacity(0.3),
                           color: Colors.white,
                           minHeight: 10,
@@ -179,7 +365,7 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      "${_completedSections()}/${options.length}",
+                      "${(progressPercentage * 100).toInt()}%", // Show percentage
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -187,13 +373,25 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  "Complete all sections for a comprehensive resume",
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 12,
-                  ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _getStatusMessage(),
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                    Text(
+                      "${_completedSections()}/${options.length} sections",
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -207,6 +405,8 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
               itemCount: options.length,
               itemBuilder: (context, index) {
                 final option = options[index];
+                final bool isRequired = option["required"] == true;
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -217,14 +417,14 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                       side: BorderSide(
                         color: option["completed"] == true
                             ? themeColor
-                            : Colors.grey.withOpacity(0.2),
+                            : isRequired
+                                ? Colors.orange.withOpacity(0.5)
+                                : Colors.grey.withOpacity(0.2),
                         width: option["completed"] == true ? 2 : 1,
                       ),
                     ),
                     child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(option["routes"]);
-                      },
+                      onTap: () => _navigateToSection(option["routes"]),
                       borderRadius: BorderRadius.circular(12),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -249,15 +449,49 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    option["option_name"],
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: option["completed"] == true
-                                          ? themeColor
-                                          : Colors.black87,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        option["option_name"],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: option["completed"] == true
+                                              ? themeColor
+                                              : Colors.black87,
+                                        ),
+                                      ),
+                                      if (isRequired)
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: option["completed"] == true
+                                                  ? themeColor.withOpacity(0.1)
+                                                  : Colors.orange
+                                                      .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              "Required",
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color:
+                                                    option["completed"] == true
+                                                        ? themeColor
+                                                        : Colors.orange,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -291,20 +525,7 @@ class _Build_Options_PageState extends State<Build_Options_Page> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: themeColor,
         child: const Icon(Icons.picture_as_pdf),
-        onPressed: () {
-          if (Global.image != null) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ResumeTemplateSelector()));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Please add a profile image first"),
-              behavior: SnackBarBehavior.floating,
-            ));
-            Navigator.of(context).pushNamed("contact_info_page");
-          }
-        },
+        onPressed: _navigateToResumeTemplates,
       ),
     );
   }

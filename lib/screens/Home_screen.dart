@@ -429,11 +429,13 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                           _buildVideoCard(
                             context,
-                            title: "LinkedIn Profile Tips",
-                            duration: "15:30",
+                            title:
+                                "How I Optimized my LinkedIn Profile and Got 20+ Interview RAG",
+                            duration: "8.52",
                             thumbnailUrl:
-                                "https://img.youtube.com/vi/JcK7dPzY7JM/mqdefault.jpg",
-                            videoUrl: "https://youtu.be/JcK7dPzY7JM",
+                                "https://i.ytimg.com/an_webp/dQ6RNltrXro/mqdefault_6s.webp?du=3000&sqp=CKj21b8G&rs=AOn4CLCjPrQMku8Of-Rt1gAhtTlO3GNQXw",
+                            videoUrl:
+                                "https://www.youtube.com/watch?v=dQ6RNltrXro",
                           ),
                         ],
                       ),

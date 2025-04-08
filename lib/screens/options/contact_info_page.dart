@@ -23,6 +23,8 @@ class _contact_info_pageState extends State<contact_info_page> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController linkedinController = TextEditingController();
+  final TextEditingController leetcodeController = TextEditingController();
   final TextEditingController address1Controller = TextEditingController();
   final TextEditingController address2Controller = TextEditingController();
   final TextEditingController address3Controller = TextEditingController();
@@ -139,119 +141,174 @@ class _contact_info_pageState extends State<contact_info_page> {
                     child: Column(
                       children: [
                         Container(
-                          height: _height * 0.48,
+                          height: _height *
+                              0.42, // Increased height to accommodate new fields
                           margin: const EdgeInsets.all(20),
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           color: Colors.white,
                           child: SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),
-                            child: Expanded(
-                              flex: 7,
-                              child: Form(
-                                key: contactFormKey,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Image.asset(
-                                            "assets/icons/user.png",
-                                            height: _height * 0.048,
+                            child: Form(
+                              key: contactFormKey,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Image.asset(
+                                          "assets/icons/user.png",
+                                          height: _height * 0.048,
+                                        ),
+                                      ),
+                                      SizedBox(width: _width * 0.02),
+                                      Expanded(
+                                        flex: 4,
+                                        child: TextFormField(
+                                          controller: nameController,
+                                          validator: (val) {
+                                            if (val!.isEmpty) {
+                                              return "Enter your Name First...";
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (val) {
+                                            setState(() {
+                                              Global.name = val;
+                                            });
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: "Name",
+                                            label: Text("Name"),
                                           ),
                                         ),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: nameController,
-                                            validator: (val) {
-                                              if (val!.isEmpty) {
-                                                return "Enter your Name First...";
-                                              }
-                                              return null;
-                                            },
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.name = val;
-                                              });
-                                            },
-                                            decoration: const InputDecoration(
-                                              hintText: "Name",
-                                              label: Text("Name"),
-                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Image.asset(
+                                          "assets/icons/email.png",
+                                          height: _height * 0.048,
+                                        ),
+                                      ),
+                                      SizedBox(width: _width * 0.02),
+                                      Expanded(
+                                        flex: 4,
+                                        child: TextFormField(
+                                          controller: emailController,
+                                          validator: (val) {
+                                            if (val!.isEmpty) {
+                                              return "Enter your Email First...";
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (val) {
+                                            setState(() {
+                                              Global.email = val;
+                                            });
+                                          },
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          decoration: const InputDecoration(
+                                            hintText: "Email",
+                                            label: Text("Email"),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Image.asset(
-                                            "assets/icons/email.png",
-                                            height: _height * 0.048,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Image.asset(
+                                          "assets/icons/smartphone-call.png",
+                                          height: _height * 0.048,
+                                        ),
+                                      ),
+                                      SizedBox(width: _width * 0.02),
+                                      Expanded(
+                                        flex: 4,
+                                        child: TextFormField(
+                                          controller: phoneController,
+                                          validator: (val) {
+                                            if (val!.isEmpty) {
+                                              return "Enter your Phone First...";
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (val) {
+                                            setState(() {
+                                              Global.phone = val;
+                                            });
+                                          },
+                                          keyboardType: TextInputType.phone,
+                                          decoration: const InputDecoration(
+                                            hintText: "Phone",
+                                            label: Text("Phone"),
                                           ),
                                         ),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: emailController,
-                                            validator: (val) {
-                                              if (val!.isEmpty) {
-                                                return "Enter your Email First...";
-                                              }
-                                              return null;
-                                            },
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.email = val;
-                                              });
-                                            },
-                                            keyboardType:
-                                                TextInputType.emailAddress,
-                                            decoration: const InputDecoration(
-                                              hintText: "Email",
-                                              label: Text("Email"),
-                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  // LinkedIn URL field
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Icon(
+                                          Icons.link,
+                                          size: _height * 0.035,
+                                          color: Colors.blue[800],
+                                        ),
+                                      ),
+                                      SizedBox(width: _width * 0.02),
+                                      Expanded(
+                                        flex: 4,
+                                        child: TextFormField(
+                                          controller: linkedinController,
+                                          onSaved: (val) {
+                                            setState(() {
+                                              Global.linkedinUrl = val;
+                                            });
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText:
+                                                "linkedin.com/in/username",
+                                            label: Text("LinkedIn URL"),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Image.asset(
-                                            "assets/icons/smartphone-call.png",
-                                            height: _height * 0.048,
+                                      ),
+                                    ],
+                                  ),
+                                  // LeetCode URL field
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Icon(
+                                          Icons.code,
+                                          size: _height * 0.035,
+                                          color: Colors.orange[800],
+                                        ),
+                                      ),
+                                      SizedBox(width: _width * 0.02),
+                                      Expanded(
+                                        flex: 4,
+                                        child: TextFormField(
+                                          controller: leetcodeController,
+                                          onSaved: (val) {
+                                            setState(() {
+                                              Global.leetcodeUrl = val;
+                                            });
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: "leetcode.com/username",
+                                            label: Text("LeetCode URL"),
                                           ),
                                         ),
-                                        SizedBox(width: _width * 0.02),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: phoneController,
-                                            validator: (val) {
-                                              if (val!.isEmpty) {
-                                                return "Enter your Phone First...";
-                                              }
-                                              return null;
-                                            },
-                                            onSaved: (val) {
-                                              setState(() {
-                                                Global.phone = val;
-                                              });
-                                            },
-                                            keyboardType: TextInputType.phone,
-                                            decoration: const InputDecoration(
-                                              hintText: "Phone",
-                                              label: Text("Phone"),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -269,7 +326,8 @@ class _contact_info_pageState extends State<contact_info_page> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: MyColor,
                               ),
-                              child: const Text("Save",style: TextStyle(color: Colors.black)),
+                              child: const Text("Save",
+                                  style: TextStyle(color: Colors.black)),
                             ),
                             ElevatedButton(
                                 onPressed: () {
@@ -278,6 +336,8 @@ class _contact_info_pageState extends State<contact_info_page> {
                                   nameController.clear();
                                   emailController.clear();
                                   phoneController.clear();
+                                  linkedinController.clear();
+                                  leetcodeController.clear();
                                   address1Controller.clear();
                                   address2Controller.clear();
                                   address3Controller.clear();
@@ -285,12 +345,15 @@ class _contact_info_pageState extends State<contact_info_page> {
                                     Global.name = null;
                                     Global.email = null;
                                     Global.phone = null;
+                                    Global.linkedinUrl = null;
+                                    Global.leetcodeUrl = null;
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: MyColor,
                                 ),
-                                child: const Text("Clear",style: TextStyle(color: Colors.black))),
+                                child: const Text("Clear",
+                                    style: TextStyle(color: Colors.black))),
                           ],
                         ),
                       ],
@@ -343,7 +406,10 @@ class _contact_info_pageState extends State<contact_info_page> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: MyColor,
                                     ),
-                                    child: const Text("gallery"),
+                                    child: const Text(
+                                      "Gallery",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                   ElevatedButton(
                                     onPressed: () async {
@@ -358,7 +424,10 @@ class _contact_info_pageState extends State<contact_info_page> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: MyColor,
                                     ),
-                                    child: const Text("Camera"),
+                                    child: const Text(
+                                      "Camera",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ],
                               ),

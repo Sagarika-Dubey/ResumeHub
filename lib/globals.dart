@@ -4,7 +4,9 @@ class Global {
   static String? name;
   static String? email;
   static String? phone;
-
+  static String? linkedinUrl;
+  static String? leetcodeUrl;
+  static List<String> customLanguages = [];
 
   static String? careerObjectiveDescription;
   static String? careerObjectiveExperienced;

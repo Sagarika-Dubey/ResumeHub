@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static Future<Map<String, dynamic>> uploadResume(
       String jobDescription, File resumeFile) async {
-    var uri = Uri.parse("http://192.168.152.184:5002/api/analyze"); // Flask URL
+    var uri = Uri.parse("http://192.168.0.227:5002/api/analyze"); // Flask URL
 
     var request = http.MultipartRequest('POST', uri)
       //..fields['job_description'] = jobDescription

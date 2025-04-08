@@ -104,7 +104,8 @@ class _achievement_pageState extends State<achievement_page> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyColor,
                           ),
-                          child: const Text("Save",style: TextStyle(color: Colors.black)),
+                          child: const Text("Save",
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     ),
@@ -124,7 +125,7 @@ class _achievement_pageState extends State<achievement_page> {
           child: TextField(
             controller: allControllers[i],
             decoration: InputDecoration(
-              hintText: "Exceeded Sales 17% average",
+              hintText: "Mention your achievements",
               hintStyle: TextStyle(
                 color: Colors.grey.withOpacity(0.5),
                 fontWeight: FontWeight.w500,
