@@ -4,7 +4,6 @@ import 'package:resumehub/screens/flashcard_screen.dart';
 import './jobscree.dart';
 import 'package:resumehub/screens/user_profile_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:resumehub/screens/categories_screen.dart';
 import 'package:resumehub/services/job_recc.dart';
 
