@@ -77,15 +77,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _nameController.text = user.displayName ?? 'Name not available';
 
         // Get additional profile data from Firestore
-        DocumentSnapshot userDoc = await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .get();
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
 
         print('User document exists: ${userDoc.exists}');
 
         if (userDoc.exists) {
-          Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
           _phoneController.text = userData['phone'] ?? '';
           _locationController.text = userData['location'] ?? '';
           _linkedinController.text = userData['linkedin'] ?? '';
@@ -184,7 +183,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         // Here you would upload the file to Firebase Storage
         // and save the reference in Firestore
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Resume uploaded: ${result.files.single.name}')),
+          SnackBar(
+              content: Text('Resume uploaded: ${result.files.single.name}')),
         );
       }
     } catch (e) {
@@ -223,252 +223,255 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                // Profile avatar
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF6E8EFB), Color(0xFFA777E3)],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      // Profile avatar
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xFF6E8EFB), Color(0xFFA777E3)],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            _getInitials(_nameController.text),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        _nameController.text,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Current Edit Status Debug Text
+                      Text(
+                        'Edit Mode: $_isEditing',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Profile info sections
+                      _buildProfileField(
+                        'Full Name',
+                        Icons.person_outline,
+                        _nameController,
+                        _isEditing,
+                      ),
+                      const SizedBox(height: 16),
+
+                      _buildProfileField(
+                        'Email',
+                        Icons.email_outlined,
+                        _emailController,
+                        false, // Email is not editable
+                      ),
+                      const SizedBox(height: 16),
+
+                      _buildProfileField(
+                        'Phone',
+                        Icons.phone_outlined,
+                        _phoneController,
+                        _isEditing,
+                      ),
+                      const SizedBox(height: 16),
+
+                      _buildProfileField(
+                        'Location',
+                        Icons.location_on_outlined,
+                        _locationController,
+                        _isEditing,
+                      ),
+                      const SizedBox(height: 16),
+
+                      _buildProfileField(
+                        'LinkedIn',
+                        Icons.link_outlined,
+                        _linkedinController,
+                        _isEditing,
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Save profile button (only visible in edit mode)
+                      if (_isEditing)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: _isSaving ? null : _saveUserData,
+                            icon: _isSaving
+                                ? Container(
+                                    width: 24,
+                                    height: 24,
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 3,
+                                    ),
+                                  )
+                                : const Icon(Icons.save),
+                            label:
+                                Text(_isSaving ? 'Saving...' : 'Save Profile'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if (_isEditing) const SizedBox(height: 16),
+
+                      // Cancel button (only visible in edit mode)
+                      if (_isEditing)
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _isEditing = false;
+                                print('Edit mode cancelled: $_isEditing');
+                                _loadUserData(); // Reload data to discard changes
+                              });
+                            },
+                            icon: const Icon(Icons.cancel),
+                            label: const Text('Cancel'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.grey,
+                              side: const BorderSide(color: Colors.grey),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if (_isEditing) const SizedBox(height: 30),
+
+                      // Resume options - only visible when not editing
+                      if (!_isEditing) const Divider(height: 40),
+
+                      if (!_isEditing)
+                        const Text(
+                          'Resume Options',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                      if (!_isEditing) const SizedBox(height: 20),
+
+                      // Create Resume button
+                      if (!_isEditing)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed("build_option_page");
+                            },
+                            icon: const Icon(Icons.add_circle_outline),
+                            label: const Text('Create New Resume'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if (!_isEditing) const SizedBox(height: 16),
+
+                      // Upload Resume button
+                      if (!_isEditing)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: _uploadResume,
+                            icon: const Icon(Icons.upload_file),
+                            label: const Text('Upload Existing Resume'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.purple,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if (!_isEditing) const SizedBox(height: 30),
+
+                      // Sign out button
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            await _auth.signOut();
+                            if (!mounted) return;
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WelcomeScreen()),
+                              (route) => false,
+                            );
+                          },
+                          icon: const Icon(Icons.logout),
+                          label: const Text('Sign Out'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  child: Center(
-                    child: Text(
-                      _getInitials(_nameController.text),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  _nameController.text,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // Current Edit Status Debug Text
-                Text(
-                  'Edit Mode: $_isEditing',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                // Profile info sections
-                _buildProfileField(
-                  'Full Name',
-                  Icons.person_outline,
-                  _nameController,
-                  _isEditing,
-                ),
-                const SizedBox(height: 16),
-
-                _buildProfileField(
-                  'Email',
-                  Icons.email_outlined,
-                  _emailController,
-                  false, // Email is not editable
-                ),
-                const SizedBox(height: 16),
-
-                _buildProfileField(
-                  'Phone',
-                  Icons.phone_outlined,
-                  _phoneController,
-                  _isEditing,
-                ),
-                const SizedBox(height: 16),
-
-                _buildProfileField(
-                  'Location',
-                  Icons.location_on_outlined,
-                  _locationController,
-                  _isEditing,
-                ),
-                const SizedBox(height: 16),
-
-                _buildProfileField(
-                  'LinkedIn',
-                  Icons.link_outlined,
-                  _linkedinController,
-                  _isEditing,
-                ),
-                const SizedBox(height: 30),
-
-                // Save profile button (only visible in edit mode)
-                if (_isEditing)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _isSaving ? null : _saveUserData,
-                      icon: _isSaving
-                          ? Container(
-                        width: 24,
-                        height: 24,
-                        padding: const EdgeInsets.all(2.0),
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 3,
-                        ),
-                      )
-                          : const Icon(Icons.save),
-                      label: Text(_isSaving ? 'Saving...' : 'Save Profile'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (_isEditing) const SizedBox(height: 16),
-
-                // Cancel button (only visible in edit mode)
-                if (_isEditing)
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _isEditing = false;
-                          print('Edit mode cancelled: $_isEditing');
-                          _loadUserData(); // Reload data to discard changes
-                        });
-                      },
-                      icon: const Icon(Icons.cancel),
-                      label: const Text('Cancel'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.grey,
-                        side: const BorderSide(color: Colors.grey),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (_isEditing) const SizedBox(height: 30),
-
-                // Resume options - only visible when not editing
-                if (!_isEditing) const Divider(height: 40),
-
-                if (!_isEditing)
-                  const Text(
-                    'Resume Options',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                if (!_isEditing) const SizedBox(height: 20),
-
-                // Create Resume button
-                if (!_isEditing)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed("build_option_page");
-                      },
-                      icon: const Icon(Icons.add_circle_outline),
-                      label: const Text('Create New Resume'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (!_isEditing) const SizedBox(height: 16),
-
-                // Upload Resume button
-                if (!_isEditing)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _uploadResume,
-                      icon: const Icon(Icons.upload_file),
-                      label: const Text('Upload Existing Resume'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (!_isEditing) const SizedBox(height: 30),
-
-                // Sign out button
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () async {
-                      await _auth.signOut();
-                      if (!mounted) return;
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-                            (route) => false,
-                      );
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Sign Out'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -484,11 +487,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Widget _buildProfileField(
-      String label,
-      IconData icon,
-      TextEditingController controller,
-      bool isEditable,
-      ) {
+    String label,
+    IconData icon,
+    TextEditingController controller,
+    bool isEditable,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -523,30 +526,33 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 const SizedBox(height: 4),
                 isEditable
                     ? TextFormField(
-                  controller: controller,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  validator: (value) {
-                    if (label == 'Full Name' && (value == null || value.isEmpty)) {
-                      return 'Name is required';
-                    }
-                    return null;
-                  },
-                )
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        validator: (value) {
+                          if (label == 'Full Name' &&
+                              (value == null || value.isEmpty)) {
+                            return 'Name is required';
+                          }
+                          return null;
+                        },
+                      )
                     : Text(
-                  controller.text.isEmpty ? 'Not provided' : controller.text,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                        controller.text.isEmpty
+                            ? 'Not provided'
+                            : controller.text,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
               ],
             ),
           ),

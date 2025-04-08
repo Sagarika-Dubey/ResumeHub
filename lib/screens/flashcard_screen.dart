@@ -80,7 +80,8 @@ class FlashcardScreen extends StatefulWidget {
   _FlashcardScreenState createState() => _FlashcardScreenState();
 }
 
-class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProviderStateMixin {
+class _FlashcardScreenState extends State<FlashcardScreen>
+    with SingleTickerProviderStateMixin {
   List<EnhancedFlashcard> flashcards = [];
   List<Map<String, String>> legacyFlashcards = [];
 
@@ -114,16 +115,20 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
       duration: Duration(seconds: 20),
     )..repeat();
 
-    _animation = Tween<double>(begin: 0, end: 2 * math.pi).animate(_animationController);
+    _animation =
+        Tween<double>(begin: 0, end: 2 * math.pi).animate(_animationController);
 
     storageKey = widget.categoryName != null
         ? 'enhanced_flashcards_${widget.categoryName!.toLowerCase().replaceAll(' ', '_')}'
         : 'enhanced_flashcards';
 
-    if (widget.initialFlashcards != null && widget.initialFlashcards!.isNotEmpty) {
+    if (widget.initialFlashcards != null &&
+        widget.initialFlashcards!.isNotEmpty) {
       legacyFlashcards = widget.initialFlashcards!;
       // Convert legacy flashcards to enhanced format
-      flashcards = legacyFlashcards.map((card) => EnhancedFlashcard.fromLegacy(card)).toList();
+      flashcards = legacyFlashcards
+          .map((card) => EnhancedFlashcard.fromLegacy(card))
+          .toList();
       _saveFlashcards();
     } else {
       _loadFlashcards();
@@ -145,7 +150,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
         List<dynamic> decodedList = json.decode(savedFlashcards);
         setState(() {
           flashcards = decodedList
-              .map((item) => EnhancedFlashcard.fromJson(item as Map<String, dynamic>))
+              .map((item) =>
+                  EnhancedFlashcard.fromJson(item as Map<String, dynamic>))
               .toList();
         });
       } catch (e) {
@@ -160,7 +166,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
           legacyFlashcards = decodedList
               .map((item) => Map<String, String>.from(item as Map))
               .toList();
-          flashcards = legacyFlashcards.map((card) => EnhancedFlashcard.fromLegacy(card)).toList();
+          flashcards = legacyFlashcards
+              .map((card) => EnhancedFlashcard.fromLegacy(card))
+              .toList();
           _saveFlashcards(); // Save in new format
         }
       }
@@ -182,7 +190,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
 
   Future<void> _saveFlashcards() async {
     final prefs = await SharedPreferences.getInstance();
-    final encodedData = json.encode(flashcards.map((card) => card.toJson()).toList());
+    final encodedData =
+        json.encode(flashcards.map((card) => card.toJson()).toList());
     await prefs.setString(storageKey, encodedData);
   }
 
@@ -190,7 +199,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
     inReview = flashcards.where((card) => card.isInReview).length;
     done = flashcards.where((card) => !card.isInReview).length;
     int knownCards = flashcards.where((card) => card.isKnown).length;
-    score = flashcards.isEmpty ? 0 : ((knownCards / flashcards.length) * 100).round();
+    score = flashcards.isEmpty
+        ? 0
+        : ((knownCards / flashcards.length) * 100).round();
   }
 
   void _nextCard() {
@@ -203,7 +214,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
   void _previousCard() {
     setState(() {
       _isFlipped = false;
-      _currentIndex = (_currentIndex - 1 + flashcards.length) % flashcards.length;
+      _currentIndex =
+          (_currentIndex - 1 + flashcards.length) % flashcards.length;
     });
   }
 
@@ -235,14 +247,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
       final newCards = await EnhancedAIService.generateFlashcards(topic, 5);
 
       // Convert the legacy format to enhanced format
-      final enhancedNewCards = newCards.map((card) =>
-          EnhancedFlashcard(
-            question: card['front'] ?? '',
-            solution: card['back'] ?? '',
-            tags: [topic],
-            isCommonlyAsked: math.Random().nextBool(),
-          )
-      ).toList();
+      final enhancedNewCards = newCards
+          .map((card) => EnhancedFlashcard(
+                question: card['front'] ?? '',
+                solution: card['back'] ?? '',
+                tags: [topic],
+                isCommonlyAsked: math.Random().nextBool(),
+              ))
+          .toList();
 
       setState(() {
         flashcards.addAll(enhancedNewCards);
@@ -268,7 +280,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: backgroundColor,
-        title: Text('Add Custom Flashcard', style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+        title: Text('Add Custom Flashcard',
+            style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -286,7 +299,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                     borderSide: BorderSide(color: primaryColor, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                    borderSide:
+                        BorderSide(color: primaryColor.withOpacity(0.5)),
                   ),
                 ),
               ),
@@ -304,7 +318,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                     borderSide: BorderSide(color: primaryColor, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                    borderSide:
+                        BorderSide(color: primaryColor.withOpacity(0.5)),
                   ),
                 ),
                 maxLines: 3,
@@ -317,7 +332,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                   labelText: 'Tags (comma separated)',
                   labelStyle: TextStyle(color: secondaryTextColor),
                   hintText: 'e.g. Flutter, Widgets, UI',
-                  hintStyle: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
+                  hintStyle:
+                      TextStyle(color: secondaryTextColor.withOpacity(0.5)),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: primaryColor),
                   ),
@@ -325,7 +341,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                     borderSide: BorderSide(color: primaryColor, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                    borderSide:
+                        BorderSide(color: primaryColor.withOpacity(0.5)),
                   ),
                 ),
               ),
@@ -337,7 +354,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                   labelText: 'YouTube Link (optional)',
                   labelStyle: TextStyle(color: secondaryTextColor),
                   hintText: 'https://youtu.be/...',
-                  hintStyle: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
+                  hintStyle:
+                      TextStyle(color: secondaryTextColor.withOpacity(0.5)),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: primaryColor),
                   ),
@@ -345,13 +363,15 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                     borderSide: BorderSide(color: primaryColor, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                    borderSide:
+                        BorderSide(color: primaryColor.withOpacity(0.5)),
                   ),
                 ),
               ),
               SizedBox(height: 16),
               CheckboxListTile(
-                title: Text('Mark as commonly asked', style: TextStyle(color: textColor)),
+                title: Text('Mark as commonly asked',
+                    style: TextStyle(color: textColor)),
                 value: isCommonlyAsked,
                 onChanged: (value) {
                   setState(() {
@@ -423,13 +443,15 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: backgroundColor,
-          title: Text('Delete Card', style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+          title: Text('Delete Card',
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           content: Text('Are you sure you want to delete this flashcard?',
               style: TextStyle(color: secondaryTextColor)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel', style: TextStyle(color: secondaryTextColor)),
+              child:
+                  Text('Cancel', style: TextStyle(color: secondaryTextColor)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -593,7 +615,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                         SizedBox(width: 4),
                         Text(
                           'Practice',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -706,7 +729,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
                   tooltip: 'Add New Card',
                 ),
                 IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: secondaryTextColor),
+                  icon:
+                      Icon(Icons.arrow_forward_ios, color: secondaryTextColor),
                   onPressed: _nextCard,
                   tooltip: 'Next Card',
                 ),
@@ -886,169 +910,169 @@ class _FlashcardScreenState extends State<FlashcardScreen> with SingleTickerProv
 
   Widget _buildSolutionSide(EnhancedFlashcard card) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-    Row(
-    children: [
-    Container(
-    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-    decoration: BoxDecoration(
-    color: accentColor.withOpacity(0.1),
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(color: accentColor.withOpacity(0.3)),
-    ),
-    child: Row(
-    children: [
-    Icon(Icons.lightbulb_outline, color: accentColor, size: 14),
-    SizedBox(width: 4),
-    Text(
-    'SOLUTION',
-    style: TextStyle(
-    color: accentColor,
-    fontSize: 12,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 1,
-    ),
-    ),
-    ],
-    ),
-    ),
-      Spacer(),
-      if (card.tags.isNotEmpty)
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.tag, color: secondaryTextColor, size: 14),
-              SizedBox(width: 4),
-              Text(
-                card.tags.first,
-                style: TextStyle(
-                  color: secondaryTextColor,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: accentColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: accentColor.withOpacity(0.3)),
               ),
-              if (card.tags.length > 1)
-                Text(
-                  ' +${card.tags.length - 1}',
-                  style: TextStyle(
-                    color: secondaryTextColor,
-                    fontSize: 10,
-                  ),
-                ),
-            ],
-          ),
-        ),
-    ],
-    ),
-          SizedBox(height: 24),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
+                  Icon(Icons.lightbulb_outline, color: accentColor, size: 14),
+                  SizedBox(width: 4),
                   Text(
-                    card.solution,
+                    'SOLUTION',
                     style: TextStyle(
-                      color: textColor,
-                      fontSize: 18,
-                      height: 1.5,
+                      color: accentColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
                     ),
                   ),
-                  if (card.imageUrl != null) ...[
-                    SizedBox(height: 16),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        card.imageUrl!,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(
-                              height: 150,
-                              width: double.infinity,
-                              color: Colors.grey.shade200,
-                              child: Center(
-                                child: Icon(Icons.broken_image, color: Colors.grey),
-                              ),
-                            ),
-                      ),
-                    ),
-                  ],
-                  if (card.youtubeLink != null) ...[
-                    SizedBox(height: 16),
-                    InkWell(
-                      onTap: () => _launchYoutubeLink(card.youtubeLink),
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.red.withOpacity(0.3)),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.play_circle_filled, color: Colors.red),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Watch explanation video',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
-          ),
-          SizedBox(height: 12),
-          // Tags section
-          if (card.tags.isNotEmpty) ...[
-            Text(
-              'Tags:',
-              style: TextStyle(
-                color: secondaryTextColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+            Spacer(),
+            if (card.tags.isNotEmpty)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.tag, color: secondaryTextColor, size: 14),
+                    SizedBox(width: 4),
+                    Text(
+                      card.tags.first,
+                      style: TextStyle(
+                        color: secondaryTextColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (card.tags.length > 1)
+                      Text(
+                        ' +${card.tags.length - 1}',
+                        style: TextStyle(
+                          color: secondaryTextColor,
+                          fontSize: 10,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: card.tags.map((tag) {
-                return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
+          ],
+        ),
+        SizedBox(height: 24),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  card.solution,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 18,
+                    height: 1.5,
                   ),
-                  child: Text(
-                    tag,
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                ),
+                if (card.imageUrl != null) ...[
+                  SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      card.imageUrl!,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 150,
+                        width: double.infinity,
+                        color: Colors.grey.shade200,
+                        child: Center(
+                          child: Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      ),
                     ),
                   ),
-                );
-              }).toList(),
+                ],
+                if (card.youtubeLink != null) ...[
+                  SizedBox(height: 16),
+                  InkWell(
+                    onTap: () => _launchYoutubeLink(card.youtubeLink),
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.play_circle_filled, color: Colors.red),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Watch explanation video',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              size: 16, color: Colors.red),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
-          ],
+          ),
+        ),
+        SizedBox(height: 12),
+        // Tags section
+        if (card.tags.isNotEmpty) ...[
+          Text(
+            'Tags:',
+            style: TextStyle(
+              color: secondaryTextColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: card.tags.map((tag) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  tag,
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ],
+      ],
     );
   }
 }

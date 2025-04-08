@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; // Add this import for json
-import 'flashcard_screen.dart'; // Import your existing flashcard screen
+import 'dart:convert';
+import 'flashcard_screen.dart';
 
 class CategoryItem {
   final String name;
@@ -24,7 +24,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Python',
           icon: Icons.code,
-          color: Colors.blue,
+          color: Colors.blue.shade600,
           flashcardData: {
             'python interview questions': [
               '{"front": "What is Python?", "back": "Python is a high-level, interpreted programming language known for its readability and versatility."}',
@@ -41,7 +41,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Java',
           icon: Icons.coffee,
-          color: Colors.brown,
+          color: Colors.brown.shade600,
           flashcardData: {
             'java interview questions': [
               '{"front": "What is Java?", "back": "Java is a class-based, object-oriented programming language designed to have as few implementation dependencies as possible."}',
@@ -57,7 +57,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'JavaScript',
           icon: Icons.javascript,
-          color: Colors.amber,
+          color: Colors.amber.shade700,
           flashcardData: {
             'javascript interview questions': [
               '{"front": "What is JavaScript?", "back": "JavaScript is a scripting language that enables dynamic content on web pages."}',
@@ -73,7 +73,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'C++',
           icon: Icons.code,
-          color: Colors.blue,
+          color: Colors.indigo.shade600,
           flashcardData: {
             'c++ interview questions': [
               '{"front": "What is C++?", "back": "C++ is a general-purpose programming language created as an extension of the C language."}',
@@ -94,7 +94,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Flutter',
           icon: Icons.flutter_dash,
-          color: Colors.lightBlue,
+          color: Colors.lightBlue.shade600,
           flashcardData: {
             'flutter interview questions': [
               '{"front": "What is Flutter?", "back": "Flutter is Google\'s UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase."}',
@@ -110,7 +110,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'React Native',
           icon: Icons.smartphone,
-          color: Colors.blue,
+          color: Colors.blue.shade700,
           flashcardData: {
             'react native interview questions': [
               '{"front": "What is React Native?", "back": "React Native is a framework for building native apps using React and JavaScript."}',
@@ -126,7 +126,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Android SDK',
           icon: Icons.android,
-          color: Colors.green,
+          color: Colors.green.shade600,
           flashcardData: {
             'android interview questions': [
               '{"front": "What is Android SDK?", "back": "Android SDK is a software development kit that enables developers to create applications for the Android platform."}',
@@ -147,7 +147,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'React',
           icon: Icons.web,
-          color: Colors.cyan,
+          color: Colors.cyan.shade600,
           flashcardData: {
             'react interview questions': [
               '{"front": "What is React?", "back": "React is a JavaScript library for building user interfaces, particularly single-page applications."}',
@@ -163,7 +163,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Angular',
           icon: Icons.web_asset,
-          color: Colors.red,
+          color: Colors.red.shade600,
           flashcardData: {
             'angular interview questions': [
               '{"front": "What is Angular?", "back": "Angular is a platform and framework for building single-page client applications using HTML and TypeScript."}',
@@ -179,7 +179,7 @@ class CategoriesScreen extends StatelessWidget {
         CategoryItem(
           name: 'Django',
           icon: Icons.language,
-          color: Colors.green,
+          color: Colors.green.shade700,
           flashcardData: {
             'django interview questions': [
               '{"front": "What is Django?", "back": "Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design."}',
@@ -201,69 +201,87 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         title: const Text(
           'Practice Cards',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3748),
           ),
         ),
-        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        backgroundColor: Colors.white,
         elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey.shade200,
+            height: 1.0,
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.map((section) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      section['title'],
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: sections.map((section) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24.0, bottom: 16.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 6.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey.shade700,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          section['title'],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  Wrap(
-                    spacing: 12.0,
-                    runSpacing: 12.0,
-                    children: (section['items'] as List<CategoryItem>).map((item) {
-                      return _buildCategoryItem(context, item);
-                    }).toList(),
-                  ),
-                ],
-              );
-            }).toList(),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.5,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemCount:
+                          (section['items'] as List<CategoryItem>).length,
+                      itemBuilder: (context, index) {
+                        final item =
+                            (section['items'] as List<CategoryItem>)[index];
+                        return _buildCategoryItem(context, item);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }).toList(),
+            ),
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2, // Assuming "Cards" is selected
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Interviews',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_membership),
-            label: 'Cards',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Resumes',
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: const Color(0xFF4299E1),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -296,30 +314,47 @@ class CategoriesScreen extends StatelessWidget {
         );
       },
       child: Container(
-        width: (MediaQuery.of(context).size.width - 48) / 3,
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              item.color.withOpacity(0.8),
+              item.color,
+            ],
+          ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: item.color.withOpacity(0.3),
               spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
+              blurRadius: 5,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.all(10),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(item.icon, color: item.color, size: 28),
-            const SizedBox(height: 8),
+            Icon(item.icon, color: Colors.white, size: 32),
+            const SizedBox(height: 10),
             Text(
               item.name,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${item.flashcardData.values.expand((cards) => cards).length} Cards',
+              style: TextStyle(
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
+                color: Colors.white.withOpacity(0.9),
               ),
               textAlign: TextAlign.center,
             ),
