@@ -6,6 +6,11 @@ Resume Hub is an AI-powered resume analysis and job recommendation platform buil
 
 ---
 
+## 🎥 Demo Video  
+Check out the working video of the application:  
+🔗 [Resume Hub - Demo]([https://drive.google.com/file/d/1ippnm2qmdvtUtyhlZk_hZSLN7qHY_KAy/view?usp=sharing](https://drive.google.com/file/d/1OJ21uz_u8CI801KiUuj4sPBVLBkNm43V/view?usp=sharing))  
+
+---
 ## 🚀 Features  
 
 ✅ **Resume Analysis** – Extracts skills, experience, and education from resumes  
@@ -190,8 +195,3 @@ If you want to bypass the login part, use the following credentials:
 
 ---
 
-## 🎥 Demo Video  
-Check out the working video of the application:  
-🔗 [Resume Hub - Demo](https://drive.google.com/file/d/1ippnm2qmdvtUtyhlZk_hZSLN7qHY_KAy/view?usp=sharing)  
-
----
